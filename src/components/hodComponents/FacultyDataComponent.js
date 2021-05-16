@@ -3,9 +3,12 @@ import React from 'react';
 import Table from 'react-bootstrap/Table';
 import Button from 'react-bootstrap/Button';
 
+import FacultyAdditionModal from './FacultyAdditionModal';
+
 
 
 function FacultyDataComponent(props){
+    const [modalShow, setModalShow] = React.useState(false);
         return(
             props.display?
             <div className="container-fluid">
@@ -48,9 +51,19 @@ function FacultyDataComponent(props){
                             <td><Button variant="primary">Edit</Button>{' '}</td>
                             <td><Button variant="danger">Remove</Button>{' '}</td>
                         </tr>
-                        
+                        <tr>
+                        <td colSpan='6'></td>
+                        <td><Button variant="primary" onClick={() => setModalShow(true)}>Add Faculty</Button></td>
+                    </tr>
                     </tbody>
                 </Table>
+
+                
+
+      <FacultyAdditionModal
+        show={modalShow}
+        onHide={() => setModalShow(false)}
+      />
                 
             </div>:''
         )
