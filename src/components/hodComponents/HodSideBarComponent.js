@@ -2,7 +2,11 @@ import React,{useEffect,useState} from 'react';
 import {ListGroupWrapper,ListGroup,HomeWrapper} from "../../Style";
 import SyllabusStatusComponent from './SyllabusStatusComponent';
 import FacultyDataComponent from './facultyDataComponent/FacultyDataHome';
-import SubjectAllocationComponent from './subjectAllocationComponent/SubjectAllocationHome';
+import FdpComponent from './FDPComponent';
+import AwardComponent from './AwardComponent';
+import PublishComponent from './PublishComponent';
+import CertificationComponent from './CertificationComponent';
+import IndustryTrainingComponent from './IndustryTrainingComponent';
 
 function SideBarComponent(props){
     const initialList=[
@@ -72,24 +76,28 @@ function SideBarComponent(props){
             <div className="col-md-2">
                 {props.display?
                     <ListGroupWrapper>
-                        <ListGroup href="#" onClick={(e)=>handle(e,list[0].id)} className={list[0].display? 'list-group-item list-group-item-action active': 'list-group-item list-group-item-action'}>Faculty Data</ListGroup>
-                        <ListGroup href="#" onClick={(e)=>handle(e,list[1].id)} className={list[1].display? 'list-group-item list-group-item-action active': 'list-group-item list-group-item-action'}>Subject Allocation</ListGroup>
-                        <ListGroup href="#" onClick={(e)=>handle(e,list[2].id)} className={list[2].display? 'list-group-item list-group-item-action active': 'list-group-item list-group-item-action'} >Syllabus Status</ListGroup>
+                        <ListGroup href="#" onClick={(e)=>handle(e,list[0].id)}  className={ list[0].display? 'list-group-item list-group-item-action active': 'list-group-item list-group-item-action'}>Faculty Data</ListGroup>
+                        <ListGroup href="#" className="list-group-item list-group-item-action">Subject Allocation</ListGroup>
+                        <ListGroup href="#" onClick={(e)=>handle(e,list[2].id)} className={ list[2].display? 'list-group-item list-group-item-action active': 'list-group-item list-group-item-action'} >Syllabus Status</ListGroup>
                         <ListGroup href="#" className="list-group-item list-group-item-action">Lesson Plan</ListGroup>
-                        <ListGroup href="#" className="list-group-item list-group-item-action">Workshop/FDP attended</ListGroup>
-                        <ListGroup href="#" className="list-group-item list-group-item-action">Paper published</ListGroup>
-                        <ListGroup href="#" onClick={(e)=>handle(e,list[6].id)} className={list[6].display? ' list-group-item list-group-item-action active': 'list-group-item list-group-item-action'} >Awards/Achievements</ListGroup>
-                        <ListGroup href="#" className="list-group-item list-group-item-action">Mooc's/Certifications</ListGroup>
-                        <ListGroup href="#" className="list-group-item list-group-item-action">Internship</ListGroup>
+                        <ListGroup href="#" onClick={(e)=>handle(e,list[4].id)} className={list[4].display? ' list-group-item list-group-item-action active': 'list-group-item list-group-item-action'}>Workshop/FDP attended</ListGroup>
+                        <ListGroup href="#" onClick={(e)=>handle(e,list[5].id)} className={list[5].display? ' list-group-item list-group-item-action active': 'list-group-item list-group-item-action'}>Paper published</ListGroup>
+                        <ListGroup href="#" onClick={(e)=>handle(e,list[6].id)} className={list[6].display? ' list-group-item list-group-item-action active': 'list-group-item list-group-item-action'}>Awards/Achievements</ListGroup>
+                        <ListGroup href="#" onClick={(e)=>handle(e,list[7].id)} className={list[7].display? ' list-group-item list-group-item-action active': 'list-group-item list-group-item-action'}>Mooc's/Certifications</ListGroup>
+                        <ListGroup href="#" onClick={(e)=>handle(e,list[8].id)} className={list[8].display? ' list-group-item list-group-item-action active': 'list-group-item list-group-item-action'}>Industry Training</ListGroup>
                         <ListGroup href="#" className="list-group-item list-group-item-action">Result Analysis</ListGroup>
                         <ListGroup href="#" className="list-group-item list-group-item-action">Feedback Report</ListGroup>
                     </ListGroupWrapper>:''
                 }
             </div>
             <div className={props.display?"col-md-10":"col-md-12"}>
-                <SyllabusStatusComponent display={list[2].display}/>
-                <FacultyDataComponent display={list[0].display}/>
-                <SubjectAllocationComponent display={list[1].display}/>
+               {<FacultyDataComponent display={list[0].display}/>}
+               {<SyllabusStatusComponent display={list[2].display}/>}
+               {<FdpComponent display={list[4].display}/>}
+               {<AwardComponent display={list[6].display}/>}
+               {<PublishComponent display={list[5].display}/>}
+               {<CertificationComponent display={list[7].display}/>}
+               {<IndustryTrainingComponent display={list[8].display}/>}
             </div>
         </HomeWrapper>
     )
