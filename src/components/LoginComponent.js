@@ -1,24 +1,31 @@
 import React,{ useState } from "react";
 import 'bootstrap/dist/css/bootstrap.min.css';
-import {Input,LoginList} from '../Style';
+import {Input,LoginListGroupWrapper,LoginListGroup} from '../Style';
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import { faUser,faUsers} from "@fortawesome/free-solid-svg-icons";
 
 function LoginComponent() {
     const [hod, setHod] = useState(true);
     const [faculty,setFaculty]=useState(false);
+    const [email,setEmail]=useState('');
+    const [error,setError]=useState('');
 
-    const hodHandle=(e)=>{
+    const handle=(e)=>{
         e.preventDefault();
         setHod(!hod);
         setFaculty(!faculty);
     }
-
-    const facultyHandle=(e)=>{
+    const validate=(e)=>{
         e.preventDefault();
-        setHod(!hod);
-        setFaculty(!faculty);
+        var emailPattern = new RegExp(/[a-z0-9._%+-]+@aec\.edu\.in$/g)
+        if (!emailPattern.test(email)) {
+                setError( 'please enter valid email');
+        }
+        else{
+            setError('');
+        } 
     }
+    
 
   return(
     <div>
@@ -26,17 +33,17 @@ function LoginComponent() {
                 <div className="col-sm-12 p-5"></div>
                 <div className="col-sm-2"></div>
                 <div className="col-sm-2 p-0">
-                    
-                        <LoginList href="#" onClick={hodHandle} 
-                            className={ hod? 'list-group-item list-group-item-action active': 'list-group-item list-group-item-action'}>
+                    <LoginListGroupWrapper>
+                        <LoginListGroup href="#" onClick={handle} 
+                            className={ hod? 'list-group-item list-group-item-action active': 'list-group-item list-group-item-action'} >
                             <div style={{paddingLeft:"40%",paddingTop:"15%"}}>
                             <span style={{fontSize:"45px"}}>
                                 <FontAwesomeIcon icon={faUser}/>
                             </span>
                             <h6 className="pb-5">HOD</h6> 
                         </div>
-                        </LoginList>
-                        <LoginList href="#" onClick={facultyHandle} 
+                        </LoginListGroup>
+                        <LoginListGroup href="#" onClick={handle} 
                             className={ faculty? ' list-group-item list-group-item-action active': 'list-group-item list-group-item-action'} >
                             <div style={{paddingLeft:"35%",paddingTop:"15%"}}>
                                 <span href="#" style={{fontSize:"45px"}}>
@@ -44,8 +51,8 @@ function LoginComponent() {
                                 </span>
                                 <h6 className="pb-5">Faculty</h6>
                             </div>
-                        </LoginList>
-                    
+                        </LoginListGroup>
+                    </LoginListGroupWrapper>
                 </div>
                 {
                     faculty?
@@ -57,6 +64,8 @@ function LoginComponent() {
                             <div className="form-group pl-3 pr-3">
                                 <Input type="text"
                                     placeholder="Username or Email"
+                                    value={ email }
+                                    onChange={ e => setEmail(e.target.value) }
                                 />
                             </div>
                             <div className="form-group pl-3 pr-3 pt-1">
@@ -70,11 +79,17 @@ function LoginComponent() {
                                     className="col-sm-12" 
                                     style={{backgroundColor:"#16a085",border:"6px",borderRadius:"2px",padding:"6px",color:"white",fontSize:"18px"}}
                                     type="submit"
+                                    onClick={validate}
                             >LogIn</button>
                             </div> 
                             <div className="text-center pt-2 ">
                                 <p><a href="/forgot" style={{color:"black"}}>Forgot Password?</a></p>
-                            </div>                   
+                            </div> 
+                            {
+                                error?<div className="alert alert-danger text-center">
+                                        {error}
+                                        </div>:''
+                            }                  
                         </form>
                     </div>:''
                 }
