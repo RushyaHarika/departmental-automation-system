@@ -1,7 +1,7 @@
 import React,{useEffect,useState} from 'react';
 import {ListGroupWrapper,ListGroup,HomeWrapper} from "../../Style";
 import SyllabusStatusComponent from './SyllabusStatusComponent';
-import FacultyDataComponent from './FacultyDataComponent';
+import FacultyDataComponent from './facultyDataComponent/FacultyDataHome';
 
 function SideBarComponent(props){
     const [facultyData,setFacultyData]=useState(true);
