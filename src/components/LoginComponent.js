@@ -1,6 +1,6 @@
 import React,{ useState } from "react";
 import 'bootstrap/dist/css/bootstrap.min.css';
-import {Input,ListGroupWrapper,ListGroup} from '../Style';
+import {Input,LoginList} from '../Style';
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import { faUser,faUsers} from "@fortawesome/free-solid-svg-icons";
 
@@ -26,17 +26,17 @@ function LoginComponent() {
                 <div className="col-sm-12 p-5"></div>
                 <div className="col-sm-2"></div>
                 <div className="col-sm-2 p-0">
-                    <ListGroupWrapper>
-                        <ListGroup href="#" onClick={hodHandle} 
-                            className={ hod? 'list-group-item list-group-item-action active': 'list-group-item list-group-item-action'} >
+                    
+                        <LoginList href="#" onClick={hodHandle} 
+                            className={ hod? 'list-group-item list-group-item-action active': 'list-group-item list-group-item-action'}>
                             <div style={{paddingLeft:"40%",paddingTop:"15%"}}>
                             <span style={{fontSize:"45px"}}>
                                 <FontAwesomeIcon icon={faUser}/>
                             </span>
                             <h6 className="pb-5">HOD</h6> 
                         </div>
-                        </ListGroup>
-                        <ListGroup href="#" onClick={facultyHandle} 
+                        </LoginList>
+                        <LoginList href="#" onClick={facultyHandle} 
                             className={ faculty? ' list-group-item list-group-item-action active': 'list-group-item list-group-item-action'} >
                             <div style={{paddingLeft:"35%",paddingTop:"15%"}}>
                                 <span href="#" style={{fontSize:"45px"}}>
@@ -44,8 +44,8 @@ function LoginComponent() {
                                 </span>
                                 <h6 className="pb-5">Faculty</h6>
                             </div>
-                        </ListGroup>
-                    </ListGroupWrapper>
+                        </LoginList>
+                    
                 </div>
                 {
                     faculty?
