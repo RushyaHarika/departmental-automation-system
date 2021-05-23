@@ -16,6 +16,18 @@ function SubjectDataComponent(props){
         })
         setModalShow(false);
     }
+
+    
+
+const removeSubject=(courseCode)=>{
+    fetch("/api/subject/"+courseCode,{
+        method: 'DELETE',  
+    }).then((res)=>res.json())
+    .then((data)=>console.log(data))
+    alert("Removed Successfully");
+    fetchSubjectList();
+}
+
     useEffect(() => {
          fetchSubjectList();   
     },[])
@@ -43,7 +55,7 @@ function SubjectDataComponent(props){
                                     <td>{item.courseCode}</td>
                                     <td>{item.courseName}</td>
                                     <td>{item.semester}</td>
-                                    <td><Button variant="danger">Remove</Button>{' '}</td>
+                                    <td><Button variant="danger" onClick={()=>removeSubject(`${item.courseCode}`)}>Remove</Button>{' '}</td>
                                 </tr>
                             )):""
                         }
