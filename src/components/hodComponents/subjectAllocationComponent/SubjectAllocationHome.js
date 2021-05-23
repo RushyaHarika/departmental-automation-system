@@ -38,6 +38,16 @@ function SubjectAllocationComponent(props){
     setModalShow(false);
  }
 
+ const removeAllocation=(courseCode)=>{
+    fetch("/api/subjectAllocation/"+courseCode,{
+        method: 'DELETE',  
+    }).then((res)=>res.json())
+    .then((data)=>console.log(data))
+    alert("Removed Successfully");
+    fetchSubjectAllocationList();
+}
+
+
   useEffect(() => {
        fetchFacultyList();
        fetchSubjectList();
@@ -69,7 +79,7 @@ function SubjectAllocationComponent(props){
                                     <td>{item.courseName}</td>
                                     <td>{item.facultyID}</td>
                                     <td>{item.facultyName}</td>
-                                    <td><Button variant="danger">Remove</Button>{' '}</td>
+                                    <td><Button variant="danger" onClick={()=>removeAllocation(`${item.courseCode}`)}>Remove</Button>{' '}</td>
                                 </tr>
                             )):""
                         }

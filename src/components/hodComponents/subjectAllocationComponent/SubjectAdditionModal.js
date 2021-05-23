@@ -41,6 +41,7 @@ function SubjectAdditionModal(props) {
       console.log(subjectSelectList); 
   }
 
+
     useEffect(() => {
       setSubjectSelectList([]);
       setFacultySelectList([]);
@@ -71,7 +72,7 @@ function SubjectAdditionModal(props) {
       const data=await res.json();
       console.log(data)
       if(res.status===422 || !data){
-        window.alert("Invalid Registration");
+        window.alert("Invalid");
         console.log("Invalid")
       }else{
         window.alert("Successfull");
