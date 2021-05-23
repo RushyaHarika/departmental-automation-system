@@ -7,6 +7,8 @@ import AwardComponent from './AwardComponent';
 import PublishComponent from './PublishComponent';
 import CertificationComponent from './CertificationComponent';
 import IndustryTrainingComponent from './IndustryTrainingComponent';
+import SubjectAllocationComponent from './subjectAllocationComponent/SubjectAllocationHome';
+import SubjectDataComponent from './subjectComponent/SubjectDataHome';
 
 function SideBarComponent(props){
     const initialList=[
@@ -16,7 +18,8 @@ function SideBarComponent(props){
         },{
             id:2,
             display:false
-        },{
+        },
+        {
             id:3,
             display:false
         },{
@@ -42,6 +45,9 @@ function SideBarComponent(props){
             display:false
         },{
             id:11,
+            display:false
+        },{
+            id:12,
             display:false
         }
     ]
@@ -77,14 +83,15 @@ function SideBarComponent(props){
                 {props.display?
                     <ListGroupWrapper>
                         <ListGroup href="#" onClick={(e)=>handle(e,list[0].id)}  className={ list[0].display? 'list-group-item list-group-item-action active': 'list-group-item list-group-item-action'}>Faculty Data</ListGroup>
-                        <ListGroup href="#" className="list-group-item list-group-item-action">Subject Allocation</ListGroup>
-                        <ListGroup href="#" onClick={(e)=>handle(e,list[2].id)} className={ list[2].display? 'list-group-item list-group-item-action active': 'list-group-item list-group-item-action'} >Syllabus Status</ListGroup>
+                        <ListGroup href="#" onClick={(e)=>handle(e,list[1].id)} className={ list[1].display? 'list-group-item list-group-item-action active': 'list-group-item list-group-item-action'}>Subject Data</ListGroup>
+                        <ListGroup href="#" onClick={(e)=>handle(e,list[2].id)} className={ list[2].display? 'list-group-item list-group-item-action active': 'list-group-item list-group-item-action'}>Subject Allocation</ListGroup>
+                        <ListGroup href="#" onClick={(e)=>handle(e,list[3].id)} className={ list[3].display? 'list-group-item list-group-item-action active': 'list-group-item list-group-item-action'} >Syllabus Status</ListGroup>
                         <ListGroup href="#" className="list-group-item list-group-item-action">Lesson Plan</ListGroup>
-                        <ListGroup href="#" onClick={(e)=>handle(e,list[4].id)} className={list[4].display? ' list-group-item list-group-item-action active': 'list-group-item list-group-item-action'}>Workshop/FDP attended</ListGroup>
-                        <ListGroup href="#" onClick={(e)=>handle(e,list[5].id)} className={list[5].display? ' list-group-item list-group-item-action active': 'list-group-item list-group-item-action'}>Paper published</ListGroup>
-                        <ListGroup href="#" onClick={(e)=>handle(e,list[6].id)} className={list[6].display? ' list-group-item list-group-item-action active': 'list-group-item list-group-item-action'}>Awards/Achievements</ListGroup>
-                        <ListGroup href="#" onClick={(e)=>handle(e,list[7].id)} className={list[7].display? ' list-group-item list-group-item-action active': 'list-group-item list-group-item-action'}>Mooc's/Certifications</ListGroup>
-                        <ListGroup href="#" onClick={(e)=>handle(e,list[8].id)} className={list[8].display? ' list-group-item list-group-item-action active': 'list-group-item list-group-item-action'}>Industry Training</ListGroup>
+                        <ListGroup href="#" onClick={(e)=>handle(e,list[5].id)} className={list[5].display? ' list-group-item list-group-item-action active': 'list-group-item list-group-item-action'}>Workshop/FDP attended</ListGroup>
+                        <ListGroup href="#" onClick={(e)=>handle(e,list[6].id)} className={list[6].display? ' list-group-item list-group-item-action active': 'list-group-item list-group-item-action'}>Paper published</ListGroup>
+                        <ListGroup href="#" onClick={(e)=>handle(e,list[7].id)} className={list[7].display? ' list-group-item list-group-item-action active': 'list-group-item list-group-item-action'}>Awards/Achievements</ListGroup>
+                        <ListGroup href="#" onClick={(e)=>handle(e,list[8].id)} className={list[8].display? ' list-group-item list-group-item-action active': 'list-group-item list-group-item-action'}>Mooc's/Certifications</ListGroup>
+                        <ListGroup href="#" onClick={(e)=>handle(e,list[9].id)} className={list[9].display? ' list-group-item list-group-item-action active': 'list-group-item list-group-item-action'}>Industry Training</ListGroup>
                         <ListGroup href="#" className="list-group-item list-group-item-action">Result Analysis</ListGroup>
                         <ListGroup href="#" className="list-group-item list-group-item-action">Feedback Report</ListGroup>
                     </ListGroupWrapper>:''
@@ -92,12 +99,14 @@ function SideBarComponent(props){
             </div>
             <div className={props.display?"col-md-10":"col-md-12"}>
                {<FacultyDataComponent display={list[0].display}/>}
-               {<SyllabusStatusComponent display={list[2].display}/>}
-               {<FdpComponent display={list[4].display}/>}
-               {<AwardComponent display={list[6].display}/>}
-               {<PublishComponent display={list[5].display}/>}
-               {<CertificationComponent display={list[7].display}/>}
-               {<IndustryTrainingComponent display={list[8].display}/>}
+               {<SubjectDataComponent display={list[1].display}/>}
+               {<SubjectAllocationComponent display={list[2].display}/>}
+               {<SyllabusStatusComponent display={list[3].display}/>}
+               {<FdpComponent display={list[5].display}/>}
+               {<AwardComponent display={list[7].display}/>}
+               {<PublishComponent display={list[6].display}/>}
+               {<CertificationComponent display={list[8].display}/>}
+               {<IndustryTrainingComponent display={list[9].display}/>}
             </div>
         </HomeWrapper>
     )
