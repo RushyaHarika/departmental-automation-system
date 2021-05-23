@@ -25,6 +25,10 @@ function FacultyAdditionModal(props) {
         console.log("Invalid")
       }else{
         window.alert("Successfull");
+        setFid(' ');
+        setName(' ');
+        setMobile(' ');
+        setQualification(' ');
       }
     }
     
