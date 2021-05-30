@@ -5,7 +5,6 @@ import Button from 'react-bootstrap/Button';
 import SubjectAdditionModal from './SubjectAdditionModal';
 
 function SubjectAllocationComponent(props){
-    window.list='';
     const [modalShow, setModalShow] = React.useState(false);
     let [facultyList,setFacultyList]=useState(null);
     let [subjectList,setSubjectList]=useState(null);
@@ -30,7 +29,7 @@ function SubjectAllocationComponent(props){
  }
 
  const fetchSubjectAllocationList=()=>{
-    fetch("/api/subjectAllocation").then((res)=>res.json())
+    fetch("http://localhost:5000/api/subjectAllocation").then((res)=>res.json())
     .then((data)=>{
        setSubjectAllocationList(data);
        console.log("Subject Allocation list"+subjectAllocationList);

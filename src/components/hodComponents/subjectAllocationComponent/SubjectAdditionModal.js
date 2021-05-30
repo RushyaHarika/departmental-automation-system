@@ -70,10 +70,8 @@ function SubjectAdditionModal(props) {
         })
       });
       const data=await res.json();
-      console.log(data)
-      if(res.status===422 || !data){
-        window.alert("Invalid");
-        console.log("Invalid")
+      if(res.status===400){
+        window.alert(data.error);
       }else{
         window.alert("Successfull");
         setFacultyID('');

@@ -9,7 +9,7 @@ function SubjectAdditionModal(props) {
 
     const PostSubject =async (e)=>{
       e.preventDefault();
-      const res=await fetch("/api/subject",{
+      const res=await fetch("http://localhost:5000/api/subject",{
         method:"POST",
         headers:{
           "Content-type":"application/json"
@@ -19,12 +19,10 @@ function SubjectAdditionModal(props) {
         })
       });
       const data=await res.json();
-      console.log(data)
-      if(res.status===422 || !data){
-        window.alert("Invalid");
-        console.log("Invalid")
+      if(res.status===400){
+        window.alert(data.error);
       }else{
-        window.alert("Successfull");
+        window.alert("Subject Added Successfully");
         setCourseCode('');
         setCourseName('');
         setSemester('');
@@ -48,9 +46,9 @@ function SubjectAdditionModal(props) {
               <label className='col-sm-4'>Course Code:</label>
               <input className='col-sm-6' type='textbox' value={courseCode} onChange={ e => setCourseCode(e.target.value)}/>    
               <label className='col-sm-4'>Course Name:</label>
-              <input className='col-sm-6' type='textbox' value={courseName} onChange={ e => setCourseName(e.target.value)}/>
+              <input required="true" className='col-sm-6' type='textbox' value={courseName} onChange={ e => setCourseName(e.target.value)}/>
               <label className='col-sm-4'>Semester:</label>
-              <input className='col-sm-6' type='textbox' value={semester} onChange={ e => setSemester(e.target.value)}/><br/>
+              <input required="true" className='col-sm-6' type='textbox' value={semester} onChange={ e => setSemester(e.target.value)}/><br/>
           </form>
         </Modal.Body>
         <Modal.Footer>
