@@ -61,11 +61,16 @@ app.post("/api/auth",async (req,res)=>{
 } 
 });
 
+/** To get faculty id based on email */
 app.get("/api/fid/:id",async (req,res)=>{
     const f=await Faculty.findOne({email: req.params.id});
     res.send(f);
 });
 
+app.delete("/api/login/:id",async(req,res)=>{
+    const deletedFaculty=await Login.deleteOne({fid:req.params.id});
+    res.send(deletedFaculty);
+})
 
 const Faculty=mongoose.model("faculty",new mongoose.Schema({
     _id:{type:String, default:shortid.generate},
@@ -130,6 +135,45 @@ const SubjectAllocation=mongoose.model("subjectAllocation",new mongoose.Schema({
     }
 }))
 
+/**FDPs and workshops attended */
+const FDP = mongoose.model("fdp", new mongoose.Schema({
+    _id:{type:String, default:shortid.generate},
+    fid:{
+        type:String,
+        required:true
+    },
+    name:{
+        type:String
+    },
+    org:{
+        type:String
+    },
+    venue:{
+        type:String
+    },
+    resourcePerson:{
+        type:String
+    },
+    from: {
+        type: Date
+    },
+    to:{
+        type: Date
+    }
+}))
+
+app.post("/api/fdp",async (req,res)=>{
+    const newFdp=new FDP(req.body);
+    const savedFdp=await newFdp.save()
+    .then((response) =>{
+        console.log(response);
+        res.send(response);
+       })
+})
+app.get("/api/fdp/:id",async (req,res)=>{
+    const fdp=await FDP.find({fid:req.params.id});
+    res.send(fdp);
+});
 
 /** Faculty Data */
 app.get("/api/faculty",async (req,res)=>{
