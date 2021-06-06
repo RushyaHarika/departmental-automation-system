@@ -222,6 +222,32 @@ const Patent=mongoose.model("patent",new mongoose.Schema({
     }
 }))
 
+/**Seminars and Guest Lectures Organized */
+const Seminar=mongoose.model("seminar",new mongoose.Schema({
+    _id:{type:String, default:shortid.generate},
+    topic:{
+        type:String,
+        required:"Title topic is required"
+    },
+    resourcePerson:{
+        type:String
+    },
+    venue:{
+        type:String
+    },
+    date:{
+        type:Date,
+        required:"Date is required"
+    },
+    participants:{
+        type:Number
+    },
+    who:{
+        type:String
+    }
+}))
+
+
 /**Login */
 app.post("/api/login",async (req,res)=>{
     const body = req.body;
@@ -303,6 +329,11 @@ app.delete("/api/fdp/:id",async(req,res)=>{
 /** Faculty Data */
 app.get("/api/faculty",async (req,res)=>{
     const faculty=await Faculty.find({});
+    res.send(faculty);
+});
+
+app.get("/api/faculty/:id",async (req,res)=>{
+    const faculty=await Faculty.findOne({fid:req.params.id});
     res.send(faculty);
 });
 
@@ -593,6 +624,10 @@ app.get("/api/lecture/:id",async (req,res)=>{
     const lecture=await GuestLecture.find({fid:req.params.id});
     res.send(lecture);
 });
+app.get("/api/lecture",async (req,res)=>{
+    const lecture=await GuestLecture.find({});
+    res.send(lecture);
+});
 app.delete("/api/lecture/:id",async(req,res)=>{
     const deletedLecture=await GuestLecture.deleteOne({_id:req.params.id});
     res.send(deletedLecture);
@@ -625,9 +660,45 @@ app.get("/api/patent/:id",async (req,res)=>{
     const patent=await Patent.find({fid:req.params.id});
     res.send(patent);
 });
+app.get("/api/patent/",async (req,res)=>{
+    const patent=await Patent.find({});
+    res.send(patent);
+});
 app.delete("/api/patent/:id",async(req,res)=>{
     const deletedPatent=await Patent.deleteOne({_id:req.params.id});
     res.send(deletedPatent);
+})
+
+/**Seminars and Guest Lectures Organized */
+app.post("/api/seminar",async (req,res)=>{
+    const newSeminar=new Seminar(req.body);
+    const savedSeminar=await newSeminar.save()
+    .then((response) =>{
+        console.log(response);
+        res.send(response);
+       })
+       .catch( (error)=> {
+        let err="";
+        if(error.errors!==undefined){
+            if(error.errors.topic!==undefined){
+                err=error.errors.topic.properties.message;
+            } else if(error.errors.date!==undefined){
+                err=error.errors.date.properties.message;
+            }
+        } 
+        return res.status(400).json({
+            "error": err
+        })
+        
+       })
+})
+app.get("/api/seminar/",async (req,res)=>{
+    const seminar=await Seminar.find({});
+    res.send(seminar);
+});
+app.delete("/api/seminar/:id",async(req,res)=>{
+    const deletedSeminar=await Seminar.deleteOne({_id:req.params.id});
+    res.send(deletedSeminar);
 })
 
 const port=process.env.PORT || 5000;
