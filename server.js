@@ -2,11 +2,13 @@ const express=require("express");
 const bodyParser=require("body-parser");
 const mongoose=require("mongoose");
 const shortid=require("shortid");
+const cors = require('cors');
 const bcrypt = require('bcrypt');
 
 const app=express();
-app.use(bodyParser.json());
 
+app.use(bodyParser.json());
+app.use(cors());
 
 mongoose.connect("mongodb://localhost/departmental-automation-system-db",{
     useNewUrlParser:true,
@@ -30,45 +32,6 @@ const Login = mongoose.model("login", new mongoose.Schema({
     }
 }))
 
-app.post("/api/login",async (req,res)=>{
-    const body = req.body;
-    const login=new Login(body);
-    const salt = await bcrypt.genSalt(10);
-    login.password = await bcrypt.hash(login.password, salt);
-    await login.save()
-});
-
-app.get("/api/login",async (req,res)=>{
-    const faculty=await Login.find({});
-    res.send(faculty);
-});
-
-app.post("/api/auth",async (req,res)=>{
-    const body = req.body;
-    const user = await Login.findOne({email: body.email});
-    if(user){
-        const validPassword = await bcrypt.compare(body.password, user.password);
-
-    if(validPassword){
-        return res.status(200).json({message:"Valid password"});
-    } else {
-        return res.status(400).json({message:"Invalid password"});
-    }
-} else {
-    return res.status(400).json({message:"User does not exist"});   
-} 
-});
-
-app.get("/api/fid/:id",async (req,res)=>{
-    const f=await Faculty.findOne({email: req.params.id});
-    res.send(f);
-});
-
-app.delete("/api/login/:id",async(req,res)=>{
-    const deletedFaculty=await Login.deleteOne({fid:req.params.id});
-    res.send(deletedFaculty);
-})
-
 const Faculty=mongoose.model("faculty",new mongoose.Schema({
     _id:{type:String, default:shortid.generate},
     fid:{
@@ -82,19 +45,58 @@ const Faculty=mongoose.model("faculty",new mongoose.Schema({
     },
     mobile:{
         type:Number,
-        required:"Mobile number is required"
+        required:"Faculty Mobile is required"
     },
     qualification:{
         type:String,
-        required:"Qualification is required"
+        required:"Faculty Qualification is required"
     },
     email:{
         type:String,
         required:"Faculty email is required"
+    },
+}))
+
+
+const Subject=mongoose.model("subject",new mongoose.Schema({
+    _id:{type:String, default:shortid.generate},
+    courseCode:{
+        type:String,
+        required:"Course Code is required",
+        unique:true
+    },
+    courseName:{
+        type:String,
+        required:"Course Name is required"
+    },
+    semester:{
+        type:String,
+        required:"Semester is required"
+        },
+}))
+
+const SubjectAllocation=mongoose.model("subjectAllocation",new mongoose.Schema({
+    _id:{type:String, default:shortid.generate},
+    courseCode:{
+        type:String,
+        required:"Course Code is required"
+    },
+    courseName:{
+        type:String,
+        required:"Course Name is required"
+    },
+    facultyID:{
+        type:String,
+        required:"Faculty ID is required"
+    },
+    facultyName:{
+        type:String,
+        required:"Faculty Name is required",
     }
 }))
 
-const Syllabus=mongoose.model("syllabus",new mongoose.Schema({
+/** Syllabus Model*/
+ const Syllabus=mongoose.model("syllabus",new mongoose.Schema({
     _id:{type:String, default:shortid.generate},
     facultyId:{
         type:String,
@@ -120,45 +122,9 @@ const Syllabus=mongoose.model("syllabus",new mongoose.Schema({
     }
 
 }))
+ 
 
-const Subject=mongoose.model("subject",new mongoose.Schema({
-    _id:{type:String, default:shortid.generate},
-    courseCode:{
-        type:String,
-        required:"Course Code is required",
-        unique:true
-    },
-    courseName:{
-        type:String,
-        required:"Course Name is required"
-    },
-    semester:{
-        type:String,
-        required:"Semester is required"
-        },
-}))
-
-
-const SubjectAllocation=mongoose.model("subjectAllocation",new mongoose.Schema({
-    _id:{type:String, default:shortid.generate},
-    courseCode:{
-        type:String,
-        required:"Course Code is required"
-    },
-    courseName:{
-        type:String,
-        required:"Course Name is required"
-    },
-    facultyID:{
-        type:String,
-        required:"Faculty ID is required"
-    },
-    facultyName:{
-        type:String,
-        required:"Faculty Name is required",
-    }
-}))
-
+/**FDPs and workshops attended */
 const FDP = mongoose.model("fdp", new mongoose.Schema({
     _id:{type:String, default:shortid.generate},
     fid:{
@@ -166,7 +132,8 @@ const FDP = mongoose.model("fdp", new mongoose.Schema({
         required:true
     },
     name:{
-        type:String
+        type:String,
+        required:"Name of the program is required"
     },
     org:{
         type:String
@@ -178,47 +145,164 @@ const FDP = mongoose.model("fdp", new mongoose.Schema({
         type:String
     },
     from: {
-        type: Date
+        type: Date,
+        required:"Date is required"
     },
     to:{
         type: Date
+    },
+    place:{
+        type:String,
+        required:"Place is required"
+    },
+    designation:{
+        type:String,
+        required:"Designation is required"
     }
 }))
 
+/** Certifications */
+const Certification=mongoose.model("certification",new mongoose.Schema({
+    _id:{type:String, default:shortid.generate},
+    fid:{
+        type:String,
+        required:true
+    },
+    courseName:{
+        type:String,
+        required:"Course Name is required"
+    },
+    score:{
+        type:String
+    },
+    issuedBy:{
+        type:String
+    },
+    certificate:{
+        type:String
+    },
+    topper:{
+        type:String
+    }
+}))
+
+const GuestLecture=mongoose.model("lecture",new mongoose.Schema({
+    _id:{type:String, default:shortid.generate},
+    fid:{
+        type:String,
+        required:true
+    },
+    topic:{
+        type:String,
+        required:"Lecture topic is required"
+    },
+    date:{
+        type:Date,
+        required:"Date is required"
+    },
+    participants:{
+        type:String
+    },
+    college:{
+        type:String
+    }
+}))
+
+/**Login */
+app.post("/api/login",async (req,res)=>{
+    const body = req.body;
+    const login=new Login(body);
+    const salt = await bcrypt.genSalt(10);
+    login.password = await bcrypt.hash(login.password, salt);
+    const savedLogin=await login.save()
+});
+
+app.get("/api/login",async (req,res)=>{
+    const faculty=await Login.find({});
+    res.send(faculty);
+});
+
+app.post("/api/auth",async (req,res)=>{
+    const body = req.body;
+    const user = await Login.findOne({email: body.email});
+    if(user){
+        const validPassword = await bcrypt.compare(body.password, user.password);
+
+    if(validPassword){
+        return res.status(200).json({message:"Valid password"});
+    } else {
+        return res.status(400).json({message:"Invalid password"});
+    }
+} else {
+    return res.status(400).json({message:"User does not exist"});   
+} 
+});
+
+/** To get faculty id based on email */
+app.get("/api/fid/:id",async (req,res)=>{
+    const f=await Faculty.findOne({email: req.params.id});
+    res.send(f);
+});
+
+app.delete("/api/login/:id",async(req,res)=>{
+    const deletedFaculty=await Login.deleteOne({fid:req.params.id});
+    res.send(deletedFaculty);
+})
+
+
+/**FDPs workshops and seminars attended */
 app.post("/api/fdp",async (req,res)=>{
     const newFdp=new FDP(req.body);
-    await newFdp.save()
+    const savedFdp=await newFdp.save()
     .then((response) =>{
         console.log(response);
         res.send(response);
+       })
+       .catch( (error)=> {
+        let err="";
+        if(error.errors!==undefined){
+            if(error.errors.name!==undefined){
+                err=error.errors.name.properties.message;
+            }
+            else if(error.errors.from!==undefined){
+                err=error.errors.from.properties.message;
+            }
+            else if(error.errors.place!==undefined){
+                err=error.errors.place.properties.message;
+            }
+            else if(error.errors.designation!==undefined){
+                err=error.errors.designation.properties.message;
+            }
+        } 
+        return res.status(400).json({
+            "error": err
+        })
+        
        })
 })
 app.get("/api/fdp/:id",async (req,res)=>{
     const fdp=await FDP.find({fid:req.params.id});
     res.send(fdp);
 });
+app.delete("/api/fdp/:id",async(req,res)=>{
+    const deletedFDP=await FDP.deleteOne({_id:req.params.id});
+    res.send(deletedFDP);
+})
 
-
-/*Faculty Data*/
+/** Faculty Data */
 app.get("/api/faculty",async (req,res)=>{
     const faculty=await Faculty.find({});
     res.send(faculty);
 });
 
-app.get("/api/faculty/:fid",async (req,res)=>{
-    const faculty=await Faculty.findOne({fid:req.params.fid});
-    res.send(faculty);
-});
-
 app.post("/api/faculty",async (req,res)=>{
     const newFaculty=new Faculty(req.body);
-    await newFaculty.save()
+    const savedFaculty=await newFaculty.save()
     .then((response) =>{
         console.log(response);
         res.send(response);
        })
        .catch( (error)=> {
-        console.log(error);
         let err="";
         if(error.code===11000){
             err="Faculty id must be unique";  
@@ -257,7 +341,8 @@ app.delete("/api/faculty/:id",async(req,res)=>{
     res.send(deletedFaculty);
 })
 
-/*Subject data*/
+
+/** Subject Data */
 app.get("/api/subject",async (req,res)=>{
     const subject=await Subject.find({});
     res.send(subject);
@@ -265,7 +350,7 @@ app.get("/api/subject",async (req,res)=>{
 
 app.post("/api/subject",async(req,res) => {
     const newSubject = new Subject(req.body);
-    await newSubject.save()
+    const savedSubject=await newSubject.save()
     .then((response) =>{
         console.log(response);
         res.send(response);
@@ -313,7 +398,7 @@ app.get("/api/subjectAllocation/:fid",async (req,res)=>{
 
 app.post("/api/subjectAllocation",async(req,res) => {
     const newSubjectAllocation = new SubjectAllocation(req.body);
-    await newSubjectAllocation.save()
+    const savedSubjectAllocation=await newSubjectAllocation.save()
     .then((response) =>{
         console.log(response);
         res.send(response);
@@ -346,7 +431,8 @@ app.delete("/api/subjectAllocation/:id",async(req,res)=>{
     res.send(deletedAllocation);
 })
 
-/*Syllabus Data*/
+
+/**Syllabus Data*/
 app.get("/api/syllabus/:fid",async (req,res)=>{
     const syllabus=await Syllabus.find({facultyId:req.params.fid});
     res.send(syllabus);
@@ -438,6 +524,69 @@ app.delete("/api/syllabus/:id",async(req,res)=>{
     const deletedSyllabus=await Syllabus.deleteOne({_id:req.params.id});
     res.send(deletedSyllabus);
 })
+
+/**Certification */
+app.post("/api/certification",async (req,res)=>{
+    const newCertification=new Certification(req.body);
+    const savedCertification=await newCertification.save()
+    .then((response) =>{
+        console.log(response);
+        res.send(response);
+       })
+       .catch( (error)=> {
+        let err="";
+        if(error.errors!==undefined){
+            if(error.errors.courseName!==undefined){
+                err=error.errors.courseName.properties.message;
+            }
+        } 
+        return res.status(400).json({
+            "error": err
+        })
+        
+       })
+})
+app.get("/api/certification/:id",async (req,res)=>{
+    const certification=await Certification.find({fid:req.params.id});
+    res.send(certification);
+});
+app.delete("/api/certification/:id",async(req,res)=>{
+    const deletedCertification=await Certification.deleteOne({_id:req.params.id});
+    res.send(deletedCertification);
+})
+
+/**Guest Lecture */
+app.post("/api/lecture",async (req,res)=>{
+    const newLecture=new GuestLecture(req.body);
+    const savedLecture=await newLecture.save()
+    .then((response) =>{
+        console.log(response);
+        res.send(response);
+       })
+       .catch( (error)=> {
+        let err="";
+        if(error.errors!==undefined){
+            if(error.errors.topic!==undefined){
+                err=error.errors.topic.properties.message;
+            } else if(error.errors.date!==undefined){
+                err=error.errors.date.properties.message;
+            }
+        } 
+        return res.status(400).json({
+            "error": err
+        })
+        
+       })
+})
+app.get("/api/lecture/:id",async (req,res)=>{
+    const lecture=await GuestLecture.find({fid:req.params.id});
+    res.send(lecture);
+});
+app.delete("/api/lecture/:id",async(req,res)=>{
+    const deletedLecture=await GuestLecture.deleteOne({_id:req.params.id});
+    res.send(deletedLecture);
+})
+
 
 const port=process.env.PORT || 5000;
 app.listen(port,()=>console.log("server at http://localhost:5000"));
