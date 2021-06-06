@@ -63,7 +63,7 @@ function FdpHomeComponent(props){
                                     <td>{item.resourcePerson}</td>
                                     <td>{item.from}</td>
                                     <td>{item.to}</td>
-                                    <td><Button variant="danger" onClick={()=>removeFdp(`${item.fid}`)}>Remove</Button>{' '}</td>
+                                    <td><Button variant="danger" onClick={()=>removeFdp(`${item._id}`)}>Remove</Button>{' '}</td>
                                 </tr>
                             )):<tr></tr>
                         }

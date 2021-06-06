@@ -11,6 +11,8 @@ function FdpAdditionModal(props) {
     const [resourcePerson,setResourcePerson]=useState('');
     const [from,setFrom]=useState('');
     const [to,setTo]=useState('');
+    const [place,setPlace]=useState('');
+    const [designation,setDesignation]=useState('');
     const params = useParams();
     
 
@@ -22,7 +24,7 @@ function FdpAdditionModal(props) {
           "Content-type":"application/json"
         },
         body:JSON.stringify({
-          fid,name, org, venue, resourcePerson, from, to
+          fid,name, org, venue, resourcePerson, from, to, place, designation
         })
       });
       const data=await res.json();
@@ -63,10 +65,26 @@ function FdpAdditionModal(props) {
               <input className='col-sm-6' type='textbox' value={venue} onChange={ e => setVenue(e.target.value)}/>
               <label className='col-sm-4' >Resource Person:</label>
               <input className='col-sm-6' type='textbox' value={resourcePerson} onChange={ e => setResourcePerson(e.target.value)}/>
-              <label className='col-sm-4' >From:</label>
-              <input className='col-sm-6' type='date' value={from} onChange={ e => setFrom(e.target.value)}/>
-              <label className='col-sm-4' >To:</label>
-              <input className='col-sm-6' type='date' value={to} onChange={ e => setTo(e.target.value)}/>
+              <div>
+              <label className='col-sm-2' >From:</label>
+              <input className='col-sm-3' type='date' value={from} onChange={ e => setFrom(e.target.value)}/>
+              <label className='col-sm-2' >To:</label>
+              <input className='col-sm-3' type='date' value={to} onChange={ e => setTo(e.target.value)}/>
+              </div>
+              <div>
+              <label className='col-sm-2' >Place:</label>
+              <select className='col-sm-3' type='textbox' value={place} onChange={ e => setPlace(e.target.value)}>
+                <option>Select Place</option>
+                <option>In College</option>
+                <option>Outside College</option>
+              </select>
+              <label className='col-sm-2' >Designation:</label>
+              <select className='col-sm-3' type='textbox' value={designation} onChange={ e => setDesignation(e.target.value)}>
+                <option>Select Designation</option>
+                <option>Professor</option>
+                <option>Assistant Professor</option>
+              </select>
+              </div>
              </form>
         </Modal.Body>
         <Modal.Footer>
