@@ -9,7 +9,6 @@ function FdpAdditionModal(props) {
     const [org,setOrg]=useState('');;
     const [from,setFrom]=useState('');
     const [to,setTo]=useState('');
-    const [designation,setDesignation]=useState('');
     const params = useParams();
     
 
@@ -21,7 +20,7 @@ function FdpAdditionModal(props) {
           "Content-type":"application/json"
         },
         body:JSON.stringify({
-          fid,fdpName, org, designation, from, to
+          fid,fdpName, org, from, to
         })
       });
       const data=await res.json();
@@ -32,7 +31,6 @@ function FdpAdditionModal(props) {
         window.alert("FDP added successfully");
         setFdpName('');
         setOrg('');
-        setDesignation('');
         setFrom('');
         setTo('');
       }    
@@ -58,11 +56,6 @@ function FdpAdditionModal(props) {
               <label className='col-sm-4'>Organization:</label>
               <input className='col-sm-6' type='textbox' value={org} onChange={ e => setOrg(e.target.value)}/>
               <label className='col-sm-4' >Designation:</label>
-              <select className='col-sm-6' type='textbox' value={designation} onChange={ e => setDesignation(e.target.value)}>
-                <option>Select Designation</option>
-                <option>Professor</option>
-                <option>Assistant Professor</option>
-              </select>
              <div>
               <label className='col-sm-2' >From:</label>
               <input className='col-sm-3' type='date' value={from} onChange={ e => setFrom(e.target.value)}/>

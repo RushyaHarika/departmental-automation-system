@@ -46,7 +46,6 @@ function FdpHomeComponent(props){
                             <th>S.No.</th>
                             <th>FDP/Workshop Name</th>
                             <th>Organization</th>
-                            <th>Designation</th>
                             <th>From</th>
                             <th>To</th>
                         </tr>
@@ -58,7 +57,6 @@ function FdpHomeComponent(props){
                                     <td>{index+1}</td>
                                     <td>{item.fdpName}</td>
                                     <td>{item.org}</td>
-                                    <td>{item.designation}</td>
                                     <td>{item.from}</td>
                                     <td>{item.to}</td>
                                     <td><Button variant="danger" onClick={()=>removeFdp(`${item._id}`)}>Remove</Button>{' '}</td>
