@@ -4,6 +4,7 @@ import FdpAttendedComponent from './fdpComponent/FdpHome';
 import SyllabusStatusComponent from './SyllabusStatusComponent/SyllabusStatusHome';
 import CertificationComponent from './CertificationsComponent/CertificationsHome';
 import GuestLectureComponent from './GuestLecturesComponent/GuestLectureHome';
+import PatentComponent from './PatentComponent/PatentHome';
 
 function SideBarComponent(props){
     const initialList=[
@@ -70,9 +71,9 @@ function SideBarComponent(props){
                         <ListGroup href="#" onClick={(e)=>handle(e,list[2].id)} className={ list[2].display? 'list-group-item list-group-item-action active': 'list-group-item list-group-item-action'}>Guest Lectures Presented</ListGroup>
                         <ListGroup href="#" onClick={(e)=>handle(e,list[3].id)} className={ list[3].display? 'list-group-item list-group-item-action active': 'list-group-item list-group-item-action'}>Workshops / FDPs / Seminars / Trainings</ListGroup>
                         <ListGroup href="#" onClick={(e)=>handle(e,list[4].id)} className=' list-group-item list-group-item-action active'>Papers Published</ListGroup>
-                        <ListGroup href="#" onClick={(e)=>handle(e,list[5].id)} className=' list-group-item list-group-item-action active'>Awards/Achievements</ListGroup>
+                        <ListGroup href="#" onClick={(e)=>handle(e,list[5].id)} className={ list[5].display? 'list-group-item list-group-item-action active': 'list-group-item list-group-item-action'}>Patents/Copyrights</ListGroup>
                         <ListGroup href="#" onClick={(e)=>handle(e,list[6].id)} className={ list[6].display? 'list-group-item list-group-item-action active': 'list-group-item list-group-item-action'}>MOOCs/Certifications</ListGroup>
-                        <ListGroup href="#" onClick={(e)=>handle(e,list[7].id)} className= ' list-group-item list-group-item-action active'>Industry Training</ListGroup>
+                        <ListGroup href="#" onClick={(e)=>handle(e,list[7].id)} className= ' list-group-item list-group-item-action active'>Awards/Achievements</ListGroup>
                     </ListGroupWrapper>:null
                 }
             </div>
@@ -80,7 +81,9 @@ function SideBarComponent(props){
                 {<SyllabusStatusComponent display={list[1].display}/>}
                 {<GuestLectureComponent display={list[2].display}/>}       
                 {<FdpAttendedComponent display={list[3].display}/>}
+                {<PatentComponent display={list[5].display}/>}
                 {<CertificationComponent display={list[6].display}/>}
+
               
             </div>
         </HomeWrapper>

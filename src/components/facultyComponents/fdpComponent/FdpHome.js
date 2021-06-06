@@ -38,16 +38,15 @@ function FdpHomeComponent(props){
         return(
             props.display?
             <div className="container-fluid">
-            <h5  className="pt-5 pb-5">FDP/Workshop attended</h5> 
+            <h5  className="pt-5 pb-5">FDP/Workshops/Seminars attended</h5> 
                 
                 <Table responsive>
                     <thead>
                         <tr>
                             <th>S.No.</th>
                             <th>FDP/Workshop Name</th>
-                            <th>Organized By</th>
-                            <th>Venue</th>
-                            <th>Resource Person</th>
+                            <th>Organization</th>
+                            <th>Designation</th>
                             <th>From</th>
                             <th>To</th>
                         </tr>
@@ -57,10 +56,9 @@ function FdpHomeComponent(props){
                             fdpList.map((item,index)=>(
                                 <tr key={index}>
                                     <td>{index+1}</td>
-                                    <td>{item.name}</td>
+                                    <td>{item.fdpName}</td>
                                     <td>{item.org}</td>
-                                    <td>{item.venue}</td>
-                                    <td>{item.resourcePerson}</td>
+                                    <td>{item.designation}</td>
                                     <td>{item.from}</td>
                                     <td>{item.to}</td>
                                     <td><Button variant="danger" onClick={()=>removeFdp(`${item._id}`)}>Remove</Button>{' '}</td>
