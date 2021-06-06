@@ -55,6 +55,10 @@ const Faculty=mongoose.model("faculty",new mongoose.Schema({
         type:String,
         required:"Faculty email is required"
     },
+    designation:{
+        type:String,
+        required:"Designation email is required"
+    }
 }))
 
 
@@ -368,6 +372,9 @@ app.post("/api/faculty",async (req,res)=>{
             }
             else if(error.errors.email!==undefined){
                 err=error.errors.email.properties.message;
+            }
+            else if(error.errors.designation!==undefined){
+                err=error.errors.designation.properties.message;
             }
 
         } 
