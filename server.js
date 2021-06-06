@@ -142,10 +142,6 @@ const FDP = mongoose.model("fdp", new mongoose.Schema({
     org:{
         type:String
     },
-    designation:{
-        type:String,
-        required:"Designation is required"
-    },
     from: {
         type: Date,
         required:"Date is required"
@@ -310,9 +306,6 @@ app.post("/api/fdp",async (req,res)=>{
             }
             else if(error.errors.from!==undefined){
                 err=error.errors.from.properties.message;
-            }
-            else if(error.errors.designation!==undefined){
-                err=error.errors.designation.properties.message;
             }
         } 
         return res.status(400).json({
