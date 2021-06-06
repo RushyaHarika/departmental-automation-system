@@ -14,8 +14,14 @@ function FacultyDataComponent(props){
             method: 'DELETE',  
         }).then((res)=>res.json())
         .then((data)=>console.log(data))
-        alert("Removed Successfully");
+        alert("Removed Successfully in faculty table");
         fetchFacultyList();
+
+        fetch("/api/login/"+fid,{
+            method: 'DELETE',  
+        }).then((res)=>res.json())
+        .then((data)=>console.log(data))
+        alert("Removed Successfully in login table");
     }
 
     const fetchFacultyList=()=>{
@@ -43,6 +49,7 @@ function FacultyDataComponent(props){
                             <th>Mobile</th>
                             <th>Qualification</th>
                             <th>Email</th>
+                            <th>Designation</th>
                             <th>Remove Faculty</th>
                         </tr>
                     </thead>
@@ -56,12 +63,13 @@ function FacultyDataComponent(props){
                                     <td>{item.mobile}</td>
                                     <td>{item.qualification}</td>
                                     <td>{item.email}</td>
+                                    <td>{item.designation}</td>
                                     <td><Button variant="danger" onClick={()=>removeFaculty(`${item.fid}`)}>Remove</Button>{' '}</td>
                                 </tr>
                             )):<tr></tr>
                         }
                     <tr>   
-                        <td colSpan='6'></td>
+                        <td colSpan='7'></td>
                         <td><Button variant="primary" onClick={() => setModalShow(true)}>Add Faculty</Button></td>
                     </tr>
                     </tbody>

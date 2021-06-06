@@ -8,6 +8,7 @@ function FacultyAdditionModal(props) {
     const [mobile,setMobile]=useState('');
     const [qualification,setQualification]=useState('');
     const [email,setEmail]=useState("");
+    const [designation,setDesignation]=useState("");
     const [password,setPassword]=useState("Welcome");
 
     const PostFaculty =async ()=>{
@@ -18,7 +19,7 @@ function FacultyAdditionModal(props) {
           "Content-type":"application/json"
         },
         body:JSON.stringify({
-          fid,name,mobile,qualification,email
+          fid,name,mobile,qualification,email,designation
         })
       });
       const data=await res.json();
@@ -32,6 +33,7 @@ function FacultyAdditionModal(props) {
         setMobile('');
         setQualification('');
         setEmail('');
+        setDesignation('');
       }      
     }
 
@@ -78,7 +80,13 @@ function FacultyAdditionModal(props) {
               <label className='col-sm-4' >Qualification:</label>
               <input className='col-sm-6' type='textbox' value={qualification} onChange={ e => setQualification(e.target.value)}/><br/>
               <label className='col-sm-4' >Email:</label>
-              <input className='col-sm-6' type='textbox' value={email} onChange={ e => setEmail(e.target.value)}/><br/>
+              <input className='col-sm-6' type='textbox' value={email} onChange={ e => setEmail(e.target.value)}/>
+              <label className='col-sm-4' >Designation:</label>
+              <select className='col-sm-6' type='textbox' value={designation} onChange={ e => setDesignation(e.target.value)}>
+                <option>Select Designation</option>
+                <option>Professor</option>
+                <option>Assistant Professor</option>
+              </select><br/>
           </form>
         </Modal.Body>
         <Modal.Footer>
