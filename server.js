@@ -131,18 +131,16 @@ const FDP = mongoose.model("fdp", new mongoose.Schema({
         type:String,
         required:true
     },
-    name:{
+    fdpName:{
         type:String,
         required:"Name of the program is required"
     },
     org:{
         type:String
     },
-    venue:{
-        type:String
-    },
-    resourcePerson:{
-        type:String
+    designation:{
+        type:String,
+        required:"Designation is required"
     },
     from: {
         type: Date,
@@ -150,14 +148,6 @@ const FDP = mongoose.model("fdp", new mongoose.Schema({
     },
     to:{
         type: Date
-    },
-    place:{
-        type:String,
-        required:"Place is required"
-    },
-    designation:{
-        type:String,
-        required:"Designation is required"
     }
 }))
 
@@ -186,6 +176,7 @@ const Certification=mongoose.model("certification",new mongoose.Schema({
     }
 }))
 
+/**Guest Lecture */
 const GuestLecture=mongoose.model("lecture",new mongoose.Schema({
     _id:{type:String, default:shortid.generate},
     fid:{
@@ -205,6 +196,29 @@ const GuestLecture=mongoose.model("lecture",new mongoose.Schema({
     },
     college:{
         type:String
+    }
+}))
+
+/**Patents */
+const Patent=mongoose.model("patent",new mongoose.Schema({
+    _id:{type:String, default:shortid.generate},
+    fid:{
+        type:String,
+        required:true
+    },
+    title:{
+        type:String,
+        required:"Title topic is required"
+    },
+    applicationNumber:{
+        type:String,
+        required:"Application number is required"
+    },
+    inventors:{
+        type:String
+    },
+    date:{
+        type:Date
     }
 }))
 
@@ -261,14 +275,11 @@ app.post("/api/fdp",async (req,res)=>{
        .catch( (error)=> {
         let err="";
         if(error.errors!==undefined){
-            if(error.errors.name!==undefined){
-                err=error.errors.name.properties.message;
+            if(error.errors.fdpName!==undefined){
+                err=error.errors.fdpName.properties.message;
             }
             else if(error.errors.from!==undefined){
                 err=error.errors.from.properties.message;
-            }
-            else if(error.errors.place!==undefined){
-                err=error.errors.place.properties.message;
             }
             else if(error.errors.designation!==undefined){
                 err=error.errors.designation.properties.message;
@@ -587,6 +598,37 @@ app.delete("/api/lecture/:id",async(req,res)=>{
     res.send(deletedLecture);
 })
 
+/**Patents */
+app.post("/api/patent",async (req,res)=>{
+    const newPatent=new Patent(req.body);
+    const savedPatent=await newPatent.save()
+    .then((response) =>{
+        console.log(response);
+        res.send(response);
+       })
+       .catch( (error)=> {
+        let err="";
+        if(error.errors!==undefined){
+            if(error.errors.title!==undefined){
+                err=error.errors.title.properties.message;
+            } else if(error.errors.applicationNumber!==undefined){
+                err=error.errors.applicationNumber.properties.message;
+            }
+        } 
+        return res.status(400).json({
+            "error": err
+        })
+        
+       })
+})
+app.get("/api/patent/:id",async (req,res)=>{
+    const patent=await Patent.find({fid:req.params.id});
+    res.send(patent);
+});
+app.delete("/api/patent/:id",async(req,res)=>{
+    const deletedPatent=await Patent.deleteOne({_id:req.params.id});
+    res.send(deletedPatent);
+})
 
 const port=process.env.PORT || 5000;
 app.listen(port,()=>console.log("server at http://localhost:5000"));
