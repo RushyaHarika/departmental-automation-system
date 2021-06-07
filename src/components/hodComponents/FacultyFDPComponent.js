@@ -31,13 +31,12 @@ function FacultyFDPComponent(props){
         return(
             props.display?
             <div className="container-fluid">
-                <h5  className="pt-5 pb-5">Certifications and MOOCs</h5>
+                <h5  className="pt-5 pb-5">Faculty FDPs/Workshops</h5>
                 <Table responsive>
                 <thead>
                         <tr>
                                 <th>S.No.</th>
                                 <th>Faculty Name</th>
-                                <th>Designation</th>
                                 <th>FDP/Workshop Name</th>
                                 <th>Organization</th>
                                 <th>From</th>
@@ -50,7 +49,6 @@ function FacultyFDPComponent(props){
                                     <tr key={index}>
                                     <td>{index+1}</td>
                                     <td>{facultyList.find(({ fid }) => fid === item.fid).name}</td>
-                                    <td>{item.designation}</td>
                                     <td>{item.fdpName}</td> 
                                     <td>{item.org}</td>
                                     <td>{new Date(item.from).toDateString()}</td>

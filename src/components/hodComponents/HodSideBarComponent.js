@@ -9,7 +9,8 @@ import SubjectAllocationComponent from './subjectAllocationComponent/SubjectAllo
 import SubjectDataComponent from './subjectComponent/SubjectDataHome';
 import GuestLecturesComponent from './GuestLecturesComponent';
 import PatentComponent from './PatentComponent';
-import SeminarComponent from './SeminarComponent/SeminarHome'
+import SeminarComponent from './SeminarComponent/SeminarHome';
+import FacultyFDPComponent from './FacultyFDPComponent';
 
 function SideBarComponent(props){
     const initialList=[
@@ -92,8 +93,9 @@ function SideBarComponent(props){
                         <ListGroup href="#" onClick={(e)=>handle(e,list[6].id)} className={list[6].display? ' list-group-item list-group-item-action active': 'list-group-item list-group-item-action'}>Paper published</ListGroup>
                         <ListGroup href="#" onClick={(e)=>handle(e,list[7].id)} className={list[7].display? ' list-group-item list-group-item-action active': 'list-group-item list-group-item-action'}>Awards/Achievements</ListGroup>
                         <ListGroup href="#" onClick={(e)=>handle(e,list[8].id)} className={list[8].display? ' list-group-item list-group-item-action active': 'list-group-item list-group-item-action'}>Mooc's/Certifications</ListGroup>
-                        <ListGroup href="#" onClick={(e)=>handle(e,list[9].id)} className={list[9].display? ' list-group-item list-group-item-action active': 'list-group-item list-group-item-action'}>Faculty Guest Lectures</ListGroup>
-                        <ListGroup href="#" onClick={(e)=>handle(e,list[10].id)} className={list[10].display? ' list-group-item list-group-item-action active': 'list-group-item list-group-item-action'}>Patents/Copyrights</ListGroup>
+                        <ListGroup href="#" onClick={(e)=>handle(e,list[9].id)} className={list[9].display? ' list-group-item list-group-item-action active': 'list-group-item list-group-item-action'}>Faculty FDPs/Workshops</ListGroup>
+                        <ListGroup href="#" onClick={(e)=>handle(e,list[10].id)} className={list[10].display? ' list-group-item list-group-item-action active': 'list-group-item list-group-item-action'}>Faculty Guest Lectures</ListGroup>
+                        <ListGroup href="#" onClick={(e)=>handle(e,list[11].id)} className={list[11].display? ' list-group-item list-group-item-action active': 'list-group-item list-group-item-action'}>Patents/Copyrights</ListGroup>
                         <ListGroup href="#" className="list-group-item list-group-item-action">Result Analysis</ListGroup>
                         <ListGroup href="#" className="list-group-item list-group-item-action">Feedback Report</ListGroup>
                     </ListGroupWrapper>:''
@@ -108,8 +110,9 @@ function SideBarComponent(props){
                {<AwardComponent display={list[7].display}/>}
                {<PublishComponent display={list[6].display}/>}
                {<CertificationComponent display={list[8].display}/>}
-               {<GuestLecturesComponent display={list[9].display}/>}
-               {<PatentComponent display={list[10].display}/>}
+               {<FacultyFDPComponent display={list[9].display}/>}
+               {<GuestLecturesComponent display={list[10].display}/>}
+               {<PatentComponent display={list[11].display}/>}
             </div>
         </HomeWrapper>
     )
