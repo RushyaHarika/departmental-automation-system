@@ -55,7 +55,6 @@ function FdpAdditionModal(props) {
               <input className="col-sm-6" type='textbox' value={fdpName} onChange={ e => {setFdpName(e.target.value); setFid(params.id)}}/>
               <label className='col-sm-4'>Organization:</label>
               <input className='col-sm-6' type='textbox' value={org} onChange={ e => setOrg(e.target.value)}/>
-              <label className='col-sm-4' >Designation:</label>
              <div>
               <label className='col-sm-2' >From:</label>
               <input className='col-sm-3' type='date' value={from} onChange={ e => setFrom(e.target.value)}/>
