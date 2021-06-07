@@ -3,10 +3,12 @@ const bodyParser=require("body-parser");
 const mongoose=require("mongoose");
 const shortid=require("shortid");
 const bcrypt = require('bcrypt');
+const cors = require('cors');
 
 const app=express();
 
 app.use(bodyParser.json());
+app.use(cors({origin:true}))
 
 mongoose.connect("mongodb://localhost/departmental-automation-system-db",{
     useNewUrlParser:true,
@@ -137,10 +139,6 @@ const FDP = mongoose.model("fdp", new mongoose.Schema({
     },
     org:{
         type:String
-    },
-    designation:{
-        type:String,
-        required:"Designation is required"
     },
     from: {
         type: Date,
@@ -326,12 +324,6 @@ app.post("/api/fdp",async (req,res)=>{
             }
             else if(error.errors.from!==undefined){
                 err=error.errors.from.properties.message;
-            }
-            else if(error.errors.place!==undefined){
-                err=error.errors.place.properties.message;
-            }
-            else if(error.errors.designation!==undefined){
-                err=error.errors.designation.properties.message;
             }
         } 
         return res.status(400).json({
@@ -651,6 +643,10 @@ app.get("/api/lecture/:id",async (req,res)=>{
     const lecture=await GuestLecture.find({fid:req.params.id});
     res.send(lecture);
 });
+app.get("/api/lecture/",async (req,res)=>{
+    const lecture=await GuestLecture.find({});
+    res.send(lecture);
+});
 app.delete("/api/lecture/:id",async(req,res)=>{
     const deletedLecture=await GuestLecture.deleteOne({_id:req.params.id});
     res.send(deletedLecture);
@@ -681,6 +677,10 @@ app.post("/api/patent",async (req,res)=>{
 })
 app.get("/api/patent/:id",async (req,res)=>{
     const patent=await Patent.find({fid:req.params.id});
+    res.send(patent);
+});
+app.get("/api/patent/",async (req,res)=>{
+    const patent=await Patent.find({});
     res.send(patent);
 });
 app.delete("/api/patent/:id",async(req,res)=>{
@@ -752,6 +752,64 @@ app.get("/api/fdpOrganized",async (req,res)=>{
 app.delete("/api/fdpOrganized/:id",async(req,res)=>{
     const deletedLecture=await FDPOrganized.deleteOne({_id:req.params.id});
     res.send(deletedLecture);
+})
+
+/** Awards */
+const Award=mongoose.model("award",new mongoose.Schema({
+    _id:{type:String, default:shortid.generate},
+    fid:{
+        type:String,
+        required:true
+    },
+    title:{
+        type:String,
+        required:"Title is required"
+    },
+    date:{
+        type:Date,
+        required:"Date is required"
+    },
+    issuedBy:{
+        type:String
+    },
+    description:{
+        type:String
+    }
+}))
+
+app.post("/api/award",async (req,res)=>{
+    const newAward=new Award(req.body);
+    await newAward.save()
+    .then((response) =>{
+        console.log(response);
+        res.send(response);
+       })
+       .catch( (error)=> {
+        let err="";
+        if(error.errors!==undefined){
+            if(error.errors.title!==undefined){
+                err=error.errors.title.properties.message;
+            } else if(error.errors.date!==undefined){
+                err=error.errors.date.properties.message;
+            }
+        } 
+        return res.status(400).json({
+            "error": err
+        })
+        
+       })
+})
+app.get("/api/award",async (req,res)=>{
+    const award=await Award.find({});
+    res.send(award);
+});
+app.get("/api/award/:id",async (req,res)=>{
+    const award=await Award.find({fid:req.params.id});
+    res.send(award);
+});
+app.delete("/api/award/:id",async(req,res)=>{
+    const deletedAward=await Award.deleteOne({_id:req.params.id});
+    res.send(deletedAward);
 })
 
 const port=process.env.PORT || 5000;
