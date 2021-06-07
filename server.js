@@ -812,5 +812,157 @@ app.delete("/api/award/:id",async(req,res)=>{
     res.send(deletedAward);
 })
 
+/** Journals */
+const Journal=mongoose.model("journal",new mongoose.Schema({
+    _id:{type:String, default:shortid.generate},
+    fid:{
+        type:String,
+        required:true
+    },
+    title:{
+        type:String,
+        required:"Title is required"
+    },
+    date:{
+        type:Date,
+        required:"Date is required"
+    },
+    author:{
+        type:String
+    },
+    authPos:{
+        type:String
+    },
+    nameOfJournal:{
+        type:String
+    },
+    impact:{
+        type:String
+    },
+    volume:{
+        type:String
+    },
+    issue:{
+        type:String
+    },
+    page:{
+        type:String
+    },
+    type:{
+        type:String
+    }
+}))
+
+app.post("/api/journal",async (req,res)=>{
+    const newJournal=new Journal(req.body);
+    await newJournal.save()
+    .then((response) =>{
+        console.log(response);
+        res.send(response);
+       })
+       .catch( (error)=> {
+        let err="";
+        if(error.errors!==undefined){
+            if(error.errors.title!==undefined){
+                err=error.errors.title.properties.message;
+            } else if(error.errors.date!==undefined){
+                err=error.errors.date.properties.message;
+            }
+        } 
+        return res.status(400).json({
+            "error": err
+        })
+        
+       })
+})
+app.get("/api/journal",async (req,res)=>{
+    const journal=await Journal.find({});
+    res.send(journal);
+});
+app.get("/api/journal/:id",async (req,res)=>{
+    const journal=await Journal.find({fid:req.params.id});
+    res.send(journal);
+});
+app.delete("/api/journal/:id",async(req,res)=>{
+    const deletedJournal=await Journal.deleteOne({_id:req.params.id});
+    res.send(deletedJournal);
+})
+
+/** Conferences */
+const Conference=mongoose.model("conference",new mongoose.Schema({
+    _id:{type:String, default:shortid.generate},
+    fid:{
+        type:String,
+        required:true
+    },
+    title:{
+        type:String,
+        required:"Title is required"
+    },
+    date:{
+        type:Date,
+        required:"Date is required"
+    },
+    author:{
+        type:String
+    },
+    authPos:{
+        type:String
+    },
+    nameOfConference:{
+        type:String
+    },
+    impact:{
+        type:String
+    },
+    volume:{
+        type:String
+    },
+    issue:{
+        type:String
+    },
+    page:{
+        type:String
+    },
+    type:{
+        type:String
+    }
+}))
+
+app.post("/api/conference",async (req,res)=>{
+    const newConference=new Conference(req.body);
+    await newConference.save()
+    .then((response) =>{
+        console.log(response);
+        res.send(response);
+       })
+       .catch( (error)=> {
+        let err="";
+        if(error.errors!==undefined){
+            if(error.errors.title!==undefined){
+                err=error.errors.title.properties.message;
+            } else if(error.errors.date!==undefined){
+                err=error.errors.date.properties.message;
+            }
+        } 
+        return res.status(400).json({
+            "error": err
+        })
+        
+       })
+})
+app.get("/api/conference",async (req,res)=>{
+    const conference=await Conference.find({});
+    res.send(conference);
+});
+app.get("/api/conference/:id",async (req,res)=>{
+    const conference=await Conference.find({fid:req.params.id});
+    res.send(conference);
+});
+app.delete("/api/conference/:id",async(req,res)=>{
+    const deletedConference=await Conference.deleteOne({_id:req.params.id});
+    res.send(deletedConference);
+})
+
 const port=process.env.PORT || 5000;
 app.listen(port,()=>console.log("server at http://localhost:5000"));
