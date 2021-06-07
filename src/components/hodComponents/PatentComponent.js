@@ -5,7 +5,7 @@ import Table from 'react-bootstrap/Table';
 
 function PatentComponent(props){
     let [patentList,setPatentList]=useState([]);
-    let [facultyNameList,setFacultyNameList]=useState([]);
+    let [facultyList,setFacultyList]=useState([]);
     const [facultyName,setFacultyName]=useState('');
 
     const fetchPatentList=()=>{
@@ -15,20 +15,23 @@ function PatentComponent(props){
         })
     }
 
-    const fetchFaculty=(fid)=>{
-        fetch("/api/faculty/"+fid).then((res)=>res.json())
-        .then((data)=>{
-             setFacultyName(data.name);    
-        })
-        console.log(facultyName)
-      return facultyName;
+const fetchFaculty=()=>{
+    fetch("/api/faculty").then((res)=>res.json())
+    .then((data)=>{
+         console.log("data",data);
+         data.map((item)=>(
+            setFacultyList((facultyList) => [...facultyList,{"name":item.name,"fid":item.fid}])     
+         ))
+        console.log("facultyList",facultyList)
+        
+    })
 }
-
   
     
 
     useEffect(() => {
-        fetchPatentList(); 
+        fetchPatentList();
+        fetchFaculty(); 
    },[])
    
         return(
@@ -44,6 +47,7 @@ function PatentComponent(props){
                     <thead>
                         <tr>
                             <th>#</th>
+                            <th>Name of the Faculty</th>
                             <th>Title of the Patent</th>
                             <th>Application Number</th>
                             <th>Inventors</th>
@@ -57,6 +61,7 @@ function PatentComponent(props){
                                 (
                                 <tr key={index}>       
                                     <td>{index+1}</td>
+                                    <td>{facultyList.find(({ fid }) => fid === item.fid).name}</td>
                                     <td>{item.title}</td>
                                     <td>{item.applicationNumber}</td>
                                     <td>{item.inventors}</td>
