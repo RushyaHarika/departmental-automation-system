@@ -41,21 +41,21 @@ const Faculty=mongoose.model("faculty",new mongoose.Schema({
         unique:true
     },
     name:{
-        type:String,
-        required:"Faculty Name is required"
+        type:String
     },
     mobile:{
-        type:Number,
-        required:"Faculty Mobile is required"
+        type:Number
     },
     qualification:{
-        type:String,
-        required:"Faculty Qualification is required"
+        type:String
     },
     email:{
         type:String,
         required:"Faculty email is required"
     },
+    designation:{
+        type:String
+    }
 }))
 
 /*subject Addition*/
@@ -368,19 +368,6 @@ app.post("/api/faculty",async (req,res)=>{
             if(error.errors.fid!==undefined){
                 err=error.errors.fid.properties.message;
             }
-            else if(error.errors.name!==undefined){
-                err=error.errors.name.properties.message;
-            }
-            else if(error.errors.mobile!==undefined){
-                if(error.errors.mobile.kind==="Number"){
-                    err="Mobile number must be a number";
-                }else{
-                    err=error.errors.mobile.properties.message;
-                }
-            }
-            else if(error.errors.qualification!==undefined){
-                err=error.errors.qualification.properties.message;
-            }
             else if(error.errors.email!==undefined){
                 err=error.errors.email.properties.message;
             }
@@ -398,6 +385,10 @@ app.delete("/api/faculty/:id",async(req,res)=>{
     res.send(deletedFaculty);
 })
 
+app.put("/api/faculty/:id",async(req,res)=>{
+    const updatedFaculty=await Faculty.updateOne({ fid: req.params.id },{ $set: {name:req.body.name, mobile:req.body.mobile, qualification:req.body.qualification, designation:req.body.designation} });
+    res.send(updatedFaculty);
+})
 
 /** Subject Data */
 app.get("/api/subject",async (req,res)=>{
