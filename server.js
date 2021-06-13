@@ -67,12 +67,10 @@ const Subject=mongoose.model("subject",new mongoose.Schema({
         unique:true
     },
     courseName:{
-        type:String,
-        required:"Course Name is required"
+        type:String
     },
     semester:{
-        type:String,
-        required:"Semester is required"
+        type:String
         },
 }))
 
@@ -412,12 +410,6 @@ app.post("/api/subject",async(req,res) => {
             if(error.errors.courseCode!==undefined){
                 err=error.errors.courseCode.properties.message;
             }
-            else if(error.errors.courseName!==undefined){
-                err=error.errors.courseName.properties.message;
-            }
-            else if(error.errors.semester!==undefined){
-                err=error.errors.semester.properties.message;
-            }
         } 
         return res.status(400).json({
             "error": err
@@ -430,6 +422,11 @@ app.post("/api/subject",async(req,res) => {
 app.delete("/api/subject/:id",async(req,res)=>{
     const deletedSubject=await Subject.deleteOne({courseCode:req.params.id});
     res.send(deletedSubject);
+})
+
+app.put("/api/subject/:id",async(req,res)=>{
+    const updatedSubject=await Subject.updateOne({courseCode:req.params.id },{ $set:{courseName:req.body.courseName, semester:req.body.semester}});
+    res.send(updatedSubject);
 })
 
 /**Subject Allocation */
