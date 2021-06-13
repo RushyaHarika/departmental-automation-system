@@ -4,10 +4,14 @@ import Table from 'react-bootstrap/Table';
 import Button from 'react-bootstrap/Button';
 
 import FacultyAdditionModal from './FacultyAdditionModal';
+import FacultyEditModal from './FacultyEditModal';
 
 function FacultyDataComponent(props){
     const [modalShow, setModalShow] = useState(false);
+    const [editModalShow, setEditModalShow] = useState(false);
+    const [editItem,setEditItem] = useState('');
     let [facultyList,setFacultyList]=useState(null);
+
 
     const removeFaculty=(fid)=>{
         fetch("/api/faculty/"+fid,{
@@ -30,6 +34,7 @@ function FacultyDataComponent(props){
            setFacultyList(data);     
         }) 
         setModalShow(false);
+        setEditModalShow(false);
     }
     useEffect(() => {
          fetchFacultyList();   
@@ -50,6 +55,7 @@ function FacultyDataComponent(props){
                             <th>Qualification</th>
                             <th>Email</th>
                             <th>Designation</th>
+                            <th>Edit Faculty Details</th>
                             <th>Remove Faculty</th>
                         </tr>
                     </thead>
@@ -64,13 +70,14 @@ function FacultyDataComponent(props){
                                     <td>{item.qualification}</td>
                                     <td>{item.email}</td>
                                     <td>{item.designation}</td>
-                                    <td><Button variant="danger" onClick={()=>removeFaculty(`${item.fid}`)}>Remove</Button>{' '}</td>
+                                    <td><Button variant="primary" onClick={()=> { setEditItem(item);setEditModalShow(true);}}>Edit</Button>{' '}</td>
+                                    <td><Button variant="danger" onClick={()=>{removeFaculty(`${item.fid}`)}}>Remove</Button>{' '}</td>
                                 </tr>
                             )):<tr></tr>
                         }
                     <tr>   
-                        <td colSpan='7'></td>
-                        <td><Button variant="primary" onClick={() => setModalShow(true)}>Add Faculty</Button></td>
+                        <td colSpan='8'></td>
+                        <td><Button variant="primary" onClick={() => {setModalShow(true);}}>Add Faculty</Button></td>
                     </tr>
                     </tbody>
                 </Table>
@@ -81,6 +88,12 @@ function FacultyDataComponent(props){
         show={modalShow}
         onHide={()=>fetchFacultyList()}
       />
+
+    <FacultyEditModal
+        show={editModalShow}
+        onHide={()=>fetchFacultyList()}
+        editItem = {editItem}
+      />    
                 
             </div>:''
         )
