@@ -1,7 +1,8 @@
 import React,{useEffect,useState} from 'react';
-
+import ReactHTMLTableToExcel from 'react-html-table-to-excel';
 import Table from 'react-bootstrap/Table';
 import Button from 'react-bootstrap/Button';
+
 
 
 function SyllabusStatusHome(props){
@@ -12,6 +13,7 @@ function SyllabusStatusHome(props){
     const [date,setDate]=useState(null);
     const [section,setSection]=useState(null);
     const [year,setYear]=useState(null);
+
 
     const fetchFaculty=()=>{
             fetch("/api/faculty").then((res)=>res.json())
@@ -93,7 +95,7 @@ function SyllabusStatusHome(props){
                 </div>
                 
                 
-                <Table responsive>
+                <Table id="syllabusStatus" responsive>
                     <thead>
                         <tr>
                             <th>#</th>
@@ -129,6 +131,14 @@ function SyllabusStatusHome(props){
                     </tbody>
                     
                 </Table>
+
+                <ReactHTMLTableToExcel
+                    id="test-table-xls-button"
+                    className="download-table-xls-button btn-primary rounded p-1 float-right"
+                    table="syllabusStatus"
+                    filename="syllabus-status"
+                    sheet="tablexls"
+                    buttonText="Download syllabus status"/>
                 
             </div>:''
         )

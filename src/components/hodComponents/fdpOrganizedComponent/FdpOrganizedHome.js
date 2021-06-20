@@ -30,7 +30,7 @@ function FdpComponent(props){
         return(
             props.display?
             <div className="container-fluid">
-                <h5  className="pt-5 pb-5">Faculty Development Programs/Workshops Attended</h5>
+                <h5  className="pt-5 pb-5">Faculty Development Programs/Workshops Organized</h5>
                 <Table responsive>
                 <thead>
                         <tr>

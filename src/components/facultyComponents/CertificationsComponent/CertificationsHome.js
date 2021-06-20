@@ -49,6 +49,9 @@ function CertificationsHomeComponent(props){
                             <th>Issued by</th>
                             <th>Certificate</th>
                             <th>Topper</th>
+                            <th>Year</th>
+                            <th>Cycle</th>
+                            <th>Document</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -61,19 +64,16 @@ function CertificationsHomeComponent(props){
                                     <td>{item.issuedBy}</td>
                                     <td>{item.certificate}</td>
                                     <td>{item.topper}</td>
+                                    <td>{item.year}</td>
+                                    <td>{item.cycle}</td>
+                                    <td>{item.file_name}</td>
                                     <td><Button variant="danger" onClick={()=>removeCertification(`${item._id}`)}>Remove</Button>{' '}</td>
                                 </tr>
                             )):<tr></tr>
                         }
-                    <tr>   
-                        <td colSpan='6'></td>
-                        <td><Button variant="primary" onClick={() => setModalShow(true)}>Add Certification</Button></td>
-                    </tr>
                     </tbody>
                 </Table>
-
-                
-
+                <Button style={{float:'right'}} variant="primary" onClick={() => setModalShow(true)}>Add Certification</Button>
       <CertificationsAdditionModal
         show={modalShow}
         onHide={()=>fetchCertificationList()}

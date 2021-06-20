@@ -10,18 +10,20 @@ function AwardAdditionModal(props) {
     const [issuedBy,setIssuedBy]=useState('');
     const [description,setDescription]=useState('');
     const params = useParams();
-    
+    const [pdf,setPDF]=useState("");
+  
 
     const PostAward =async ()=>{
-      window.alert(fid);  
+      let formData = new FormData();
+      formData.append('fid', fid);
+      formData.append('title', title);
+      formData.append('date', date);
+      formData.append('issuedBy', issuedBy);
+      formData.append('description', description);
+      formData.append('pdf', pdf);
       const res=await fetch("/api/award",{
         method:"POST",
-        headers:{
-          "Content-type":"application/json"
-        },
-        body:JSON.stringify({
-          fid, title, date, issuedBy, description
-        })
+        body:formData
       });
       const data=await res.json();
       if(res.status===400){
@@ -46,7 +48,7 @@ function AwardAdditionModal(props) {
       >
         <Modal.Header closeButton>
           <Modal.Title id="contained-modal-title-vcenter">
-            Certification Details
+            Awards/Achievements
           </Modal.Title>
         </Modal.Header>
         <Modal.Body>
@@ -59,6 +61,8 @@ function AwardAdditionModal(props) {
               <input className='col-sm-6' type='textbox' value={issuedBy} onChange={ e => setIssuedBy(e.target.value)}/>
               <label className='col-sm-4' >Description:</label>
               <input className='col-sm-6' type='textbox' value={description} onChange={ e => setDescription(e.target.value)}/>
+              <label className='col-sm-4' >Upload Certificate:</label>
+              <input className='col-sm-6' type='file' name='pdf' onChange={ e => setPDF(e.target.files[0])}/>
             </form>
         </Modal.Body>
         <Modal.Footer>

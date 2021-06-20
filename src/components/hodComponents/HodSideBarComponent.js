@@ -1,16 +1,20 @@
-import React,{useEffect,useState} from 'react';
+import React,{useState} from 'react';
 import {ListGroupWrapper,ListGroup,HomeWrapper} from "../../Style";
 import SyllabusStatusComponent from './syllabusStatusComponent/SyllabusStatusHome';
+import SubjectDataComponent from './subjectComponent/SubjectDataHome';
 import FacultyDataComponent from './facultyDataComponent/FacultyDataHome';
+import FdpComponent from './fdpOrganizedComponent/FdpOrganizedHome';
 import AwardComponent from './AwardComponent';
 import PublishComponent from './PublishComponent';
 import CertificationComponent from './CertificationComponent';
+import IndustryTrainingComponent from './IndustryTrainingComponent';
 import SubjectAllocationComponent from './subjectAllocationComponent/SubjectAllocationHome';
-import SubjectDataComponent from './subjectComponent/SubjectDataHome';
-import GuestLecturesComponent from './GuestLecturesComponent';
+import FacultyFdpComponent from './FacultyFDPComponent';
+import GuestLecturesComponent from './GuestLectureComponent';
 import PatentComponent from './PatentComponent';
-import SeminarComponent from './SeminarComponent/SeminarHome';
-import FacultyFDPComponent from './FacultyFDPComponent';
+import SeminarComponent from './SeminarComponenr/SeminarHome';
+import LessonPlanComponent from './LessonPlanComponent';
+
 
 function SideBarComponent(props){
     const initialList=[
@@ -20,8 +24,7 @@ function SideBarComponent(props){
         },{
             id:2,
             display:false
-        },
-        {
+        },{
             id:3,
             display:false
         },{
@@ -51,6 +54,12 @@ function SideBarComponent(props){
         },{
             id:12,
             display:false
+        },{
+            id:13,
+            display:false
+        },{
+            id:14,
+            display:false
         }
     ]
     const [list,setList]=useState(initialList);
@@ -75,27 +84,26 @@ function SideBarComponent(props){
         });
         setList(newList);
     }
-    useEffect(() => {
-        setList(initialList);
-    }, [])
-
+    
     return(
         <HomeWrapper className="row">
             <div className="col-md-2">
                 {props.display?
                     <ListGroupWrapper>
                         <ListGroup href="#" onClick={(e)=>handle(e,list[0].id)}  className={ list[0].display? 'list-group-item list-group-item-action active': 'list-group-item list-group-item-action'}>Faculty Data</ListGroup>
-                        <ListGroup href="#" onClick={(e)=>handle(e,list[1].id)} className={ list[1].display? 'list-group-item list-group-item-action active': 'list-group-item list-group-item-action'}>Subject Data</ListGroup>
-                        <ListGroup href="#" onClick={(e)=>handle(e,list[2].id)} className={ list[2].display? 'list-group-item list-group-item-action active': 'list-group-item list-group-item-action'}>Subject Allocation</ListGroup>
+                        <ListGroup href="#" onClick={(e)=>handle(e,list[1].id)}  className={ list[1].display? 'list-group-item list-group-item-action active': 'list-group-item list-group-item-action'}>Subject Data</ListGroup>
+                        <ListGroup href="#" onClick={(e)=>handle(e,list[2].id)}  className={ list[2].display? 'list-group-item list-group-item-action active': 'list-group-item list-group-item-action'}>Subject Allocation</ListGroup>
                         <ListGroup href="#" onClick={(e)=>handle(e,list[3].id)} className={ list[3].display? 'list-group-item list-group-item-action active': 'list-group-item list-group-item-action'} >Syllabus Status</ListGroup>
-                        <ListGroup href="#" className="list-group-item list-group-item-action">Lesson Plan</ListGroup>
-                        <ListGroup href="#" onClick={(e)=>handle(e,list[5].id)} className={list[5].display? ' list-group-item list-group-item-action active': 'list-group-item list-group-item-action'}>Seminars/Guest Lectures Organized</ListGroup>
-                        <ListGroup href="#" onClick={(e)=>handle(e,list[6].id)} className={list[6].display? ' list-group-item list-group-item-action active': 'list-group-item list-group-item-action'}>Paper published</ListGroup>
-                        <ListGroup href="#" onClick={(e)=>handle(e,list[7].id)} className={list[7].display? ' list-group-item list-group-item-action active': 'list-group-item list-group-item-action'}>Awards/Achievements</ListGroup>
-                        <ListGroup href="#" onClick={(e)=>handle(e,list[8].id)} className={list[8].display? ' list-group-item list-group-item-action active': 'list-group-item list-group-item-action'}>Mooc's/Certifications</ListGroup>
-                        <ListGroup href="#" onClick={(e)=>handle(e,list[9].id)} className={list[9].display? ' list-group-item list-group-item-action active': 'list-group-item list-group-item-action'}>Faculty FDPs/Workshops</ListGroup>
-                        <ListGroup href="#" onClick={(e)=>handle(e,list[10].id)} className={list[10].display? ' list-group-item list-group-item-action active': 'list-group-item list-group-item-action'}>Faculty Guest Lectures</ListGroup>
-                        <ListGroup href="#" onClick={(e)=>handle(e,list[11].id)} className={list[11].display? ' list-group-item list-group-item-action active': 'list-group-item list-group-item-action'}>Patents/Copyrights</ListGroup>
+                        <ListGroup href="#"  onClick={(e)=>handle(e,list[4].id)} className={ list[4].display?'list-group-item list-group-item-action active': 'list-group-item list-group-item-action'}>Lesson Plan</ListGroup>
+                        <ListGroup href="#" onClick={(e)=>handle(e,list[5].id)} className={list[5].display? ' list-group-item list-group-item-action active': 'list-group-item list-group-item-action'}>Workshop/FDP organized</ListGroup>
+                        <ListGroup href="#" onClick={(e)=>handle(e,list[6].id)} className={list[6].display? ' list-group-item list-group-item-action active': 'list-group-item list-group-item-action'}>Guest Lecture/Seminar organized</ListGroup>
+                        <ListGroup href="#" onClick={(e)=>handle(e,list[7].id)} className={list[7].display? ' list-group-item list-group-item-action active': 'list-group-item list-group-item-action'}>Mooc's/Certifications</ListGroup>
+                        <ListGroup href="#" onClick={(e)=>handle(e,list[8].id)} className={list[8].display? ' list-group-item list-group-item-action active': 'list-group-item list-group-item-action'}>Award/Achievements</ListGroup>
+                        <ListGroup href="#" onClick={(e)=>handle(e,list[9].id)} className={list[9].display? ' list-group-item list-group-item-action active': 'list-group-item list-group-item-action'}>Paper published</ListGroup>
+                        <ListGroup href="#" onClick={(e)=>handle(e,list[10].id)} className={list[10].display? ' list-group-item list-group-item-action active': 'list-group-item list-group-item-action'}>Workshop/FDP Attended</ListGroup>
+                        <ListGroup href="#" onClick={(e)=>handle(e,list[11].id)} className={list[11].display? ' list-group-item list-group-item-action active': 'list-group-item list-group-item-action'}>Industry Training</ListGroup>
+                        <ListGroup href="#" onClick={(e)=>handle(e,list[12].id)} className={list[12].display? ' list-group-item list-group-item-action active': 'list-group-item list-group-item-action'}>Guest Lectures Presented</ListGroup>
+                        <ListGroup href="#" onClick={(e)=>handle(e,list[13].id)} className={list[13].display? ' list-group-item list-group-item-action active': 'list-group-item list-group-item-action'}>Patents/Copyrights</ListGroup>
                         <ListGroup href="#" className="list-group-item list-group-item-action">Result Analysis</ListGroup>
                         <ListGroup href="#" className="list-group-item list-group-item-action">Feedback Report</ListGroup>
                     </ListGroupWrapper>:''
@@ -106,13 +114,16 @@ function SideBarComponent(props){
                {<SubjectDataComponent display={list[1].display}/>}
                {<SubjectAllocationComponent display={list[2].display}/>}
                {<SyllabusStatusComponent display={list[3].display}/>}
-               {<SeminarComponent display={list[5].display}/>}
-               {<AwardComponent display={list[7].display}/>}
-               {<PublishComponent display={list[6].display}/>}
-               {<CertificationComponent display={list[8].display}/>}
-               {<FacultyFDPComponent display={list[9].display}/>}
-               {<GuestLecturesComponent display={list[10].display}/>}
-               {<PatentComponent display={list[11].display}/>}
+               {<LessonPlanComponent display={list[4].display}/>}
+               {<FdpComponent display={list[5].display}/>}
+               {<SeminarComponent display={list[6].display}/>}
+               {<FacultyFdpComponent display={list[10].display}/>}
+               {<AwardComponent display={list[8].display}/>}
+               {<PublishComponent display={list[9].display}/>}
+               {<CertificationComponent display={list[7].display}/>}
+               {<IndustryTrainingComponent display={list[11].display}/>}
+               {<GuestLecturesComponent display={list[12].display}/>}
+               {<PatentComponent display={list[13].display}/>}
             </div>
         </HomeWrapper>
     )

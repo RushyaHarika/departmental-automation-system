@@ -11,7 +11,7 @@ function SyllabusStatusHome(props){
     const [modalShow, setModalShow] = useState(false);
     let [SyllabusList,setSyllabusList]=useState(null);
     const params=useParams();
-    const fid=params.fid; 
+    const fid=params.id; 
     
     const removeSyllabus=(id)=>{
         fetch("/api/syllabus/"+id,{

@@ -8,17 +8,16 @@ import FacultyEditModal from './FacultyEditModal';
 
 function FacultyDataComponent(props){
     const [modalShow, setModalShow] = useState(false);
-    const [editModalShow, setEditModalShow] = useState(false);
-    const [editItem,setEditItem] = useState('');
     let [facultyList,setFacultyList]=useState(null);
-
+    const [editItem,setEditItem] = useState('');
+    const [editModalShow, setEditModalShow] = useState(false);
 
     const removeFaculty=(fid)=>{
         fetch("/api/faculty/"+fid,{
             method: 'DELETE',  
         }).then((res)=>res.json())
         .then((data)=>console.log(data))
-        alert("Removed Successfully in faculty table");
+        alert("Removed Successfully");
         fetchFacultyList();
 
         fetch("/api/login/"+fid,{
@@ -71,13 +70,13 @@ function FacultyDataComponent(props){
                                     <td>{item.email}</td>
                                     <td>{item.designation}</td>
                                     <td><Button variant="primary" onClick={()=> { setEditItem(item);setEditModalShow(true);}}>Edit</Button>{' '}</td>
-                                    <td><Button variant="danger" onClick={()=>{removeFaculty(`${item.fid}`)}}>Remove</Button>{' '}</td>
+                                    <td><Button variant="danger" onClick={()=>removeFaculty(`${item.fid}`)}>Remove</Button>{' '}</td>
                                 </tr>
                             )):<tr></tr>
                         }
                     <tr>   
                         <td colSpan='8'></td>
-                        <td><Button variant="primary" onClick={() => {setModalShow(true);}}>Add Faculty</Button></td>
+                        <td><Button variant="primary" onClick={() => setModalShow(true)}>Add Faculty</Button></td>
                     </tr>
                     </tbody>
                 </Table>
@@ -89,11 +88,11 @@ function FacultyDataComponent(props){
         onHide={()=>fetchFacultyList()}
       />
 
-    <FacultyEditModal
+<FacultyEditModal
         show={editModalShow}
         onHide={()=>fetchFacultyList()}
         editItem = {editItem}
-      />    
+      />  
                 
             </div>:''
         )

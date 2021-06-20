@@ -11,8 +11,6 @@ function PatentHomeComponent(props){
     const [modalShow, setModalShow] = useState(false);
     let [patentList,setPatentList]=useState(null);
     const params = useParams();
-    const [fid,setFid] = useState('');
-    
     
     const removePatent=(fid)=>{
         fetch("/api/patent/"+fid,{
@@ -48,6 +46,7 @@ function PatentHomeComponent(props){
                             <th>Application Number</th>
                             <th>Inventors</th>
                             <th>Date</th>
+                            <th>Status</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -58,13 +57,14 @@ function PatentHomeComponent(props){
                                     <td>{item.title}</td>
                                     <td>{item.applicationNumber}</td>
                                     <td>{item.inventors}</td>
-                                    <td>{item.date}</td>
+                                    <td>{new Date(item.date).toDateString()}</td>
+                                    <td>{item.status}</td>
                                     <td><Button variant="danger" onClick={()=>removePatent(`${item._id}`)}>Remove</Button>{' '}</td>
                                 </tr>
                             )):<tr></tr>
                         }
                     <tr>   
-                        <td colSpan='5'></td>
+                        <td colSpan='6'></td>
                         <td><Button variant="primary" onClick={() => setModalShow(true)}>Add Patent</Button></td>
                     </tr>
                     </tbody>

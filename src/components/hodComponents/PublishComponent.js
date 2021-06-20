@@ -1,5 +1,5 @@
 import React,{useEffect,useState} from 'react';
-
+import ReactHTMLTableToExcel from 'react-html-table-to-excel';
 import Table from 'react-bootstrap/Table';
 import Button from 'react-bootstrap/Button';
 
@@ -70,7 +70,7 @@ function PatentComponent(props){
            { journal?
                 <React.Fragment>
                 <center><h5>Journals</h5></center>
-                <Table responsive>
+                <Table id="journals" responsive>
                     
                     <thead>
                         <tr>
@@ -109,12 +109,19 @@ function PatentComponent(props){
                         }
                     </tbody>
                 </Table>
+                <ReactHTMLTableToExcel 
+                    id="test-table-xls-button"
+                    className="download-table-xls-button btn-primary rounded p-1 float-right"
+                    table="journals"
+                    filename="journals"
+                    sheet="tablexls"
+                    buttonText="Download journals Table"/>
                 </React.Fragment>
 
                :
                 <React.Fragment>
                     <center><h5>Conferences</h5></center>
-                <Table responsive>                    
+                <Table id="conference" responsive>                    
                     <thead>
                         <tr>
                             <th>S.No.</th>
@@ -152,6 +159,13 @@ function PatentComponent(props){
                         }
                     </tbody>
                 </Table>
+                <ReactHTMLTableToExcel 
+                id="test-table-xls-button"
+                className="download-table-xls-button btn-primary rounded p-1 float-right"
+                table="conference"
+                filename="conference"
+                sheet="tablexls"
+                buttonText="Download Certifications Table"/>
                 </React.Fragment>                
                 }
 

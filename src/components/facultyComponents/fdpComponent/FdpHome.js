@@ -11,8 +11,6 @@ function FdpHomeComponent(props){
     const [modalShow, setModalShow] = useState(false);
     let [fdpList,setFdpList]=useState(null);
     const params = useParams();
-    const [fid,setFid] = useState('');
-    
     
     const removeFdp=(fid)=>{
         fetch("/api/fdp/"+fid,{
@@ -48,6 +46,7 @@ function FdpHomeComponent(props){
                             <th>Organization</th>
                             <th>From</th>
                             <th>To</th>
+                            <th>Certification</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -57,14 +56,15 @@ function FdpHomeComponent(props){
                                     <td>{index+1}</td>
                                     <td>{item.fdpName}</td>
                                     <td>{item.org}</td>
-                                    <td>{item.from}</td>
-                                    <td>{item.to}</td>
+                                    <td>{new Date(item.from).toDateString()}</td>
+                                    <td>{new Date(item.to).toDateString()}</td>
+                                    <td>{item.file_name}</td>
                                     <td><Button variant="danger" onClick={()=>removeFdp(`${item._id}`)}>Remove</Button>{' '}</td>
                                 </tr>
                             )):<tr></tr>
                         }
                     <tr>   
-                        <td colSpan='7'></td>
+                        <td colSpan='6'></td>
                         <td><Button variant="primary" onClick={() => setModalShow(true)}>Add FDP</Button></td>
                     </tr>
                     </tbody>

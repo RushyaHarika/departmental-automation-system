@@ -40,6 +40,7 @@ function AwardHomeComponent(props){
             <div className="container-fluid">
             <h5  className="pt-5 pb-5">Awards/Achievements</h5> 
                 
+                
                 <Table responsive>
                     <thead>
                         <tr>
@@ -48,6 +49,7 @@ function AwardHomeComponent(props){
                             <th>Date</th>
                             <th>Given by</th>
                             <th>Description</th>
+                            <th>Certificate</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -59,6 +61,7 @@ function AwardHomeComponent(props){
                                     <td>{new Date(item.date).toDateString()}</td>
                                     <td>{item.issuedBy}</td>
                                     <td>{item.description}</td>
+                                    <td>{item.file_name}</td>
                                     <td><Button variant="danger" onClick={()=>removeAward(`${item._id}`)}>Remove</Button>{' '}</td>
                                 </tr>
                             )):<tr></tr>

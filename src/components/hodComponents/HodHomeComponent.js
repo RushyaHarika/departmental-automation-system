@@ -2,7 +2,7 @@ import React,{useEffect,useState} from "react";
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import { faPowerOff,faBell ,faBars} from "@fortawesome/free-solid-svg-icons";
 import {NavWrapper,Brand,SideBarButton,NavA,MainWrapper} from "../../Style";
-import SideBarComponent from './SideBarComponent';
+import SideBarComponent from './HodSideBarComponent';
 
 function HodHomeComponent(){
     const [sideBarDisplay, setSideBarDisplay] = useState(true);
@@ -27,7 +27,7 @@ function HodHomeComponent(){
                         <div className="container-fluid">
                             <ul className="navbar-nav ml-auto">
                                 <li className="nav-item mt-3 mr-5">
-                                    <NavA style={{fontSize:"2.5rem"}} className="nav-link" href="#"><span className="mr-5"><FontAwesomeIcon className="mr-5" icon={faBell}/></span></NavA>
+                                    <NavA style={{fontSize:"2rem"}} className="nav-link" href="#"><span className="mr-5"><FontAwesomeIcon icon={faBell}/></span></NavA>
                                 </li>
                                 
                                 <li className="nav-item mt-3">

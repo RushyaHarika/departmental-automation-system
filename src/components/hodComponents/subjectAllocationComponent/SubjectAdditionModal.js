@@ -4,69 +4,50 @@ import Button from 'react-bootstrap/Button'
 
 
 function SubjectAdditionModal(props) {
+  let [facultyList,setFacultyList]=useState([]);
+  let [subjectList,setSubjectList]=useState([]);
+  const [facultyID,setFacultyID]=useState('');
+  const [courseCode,setCourseCode]=useState('');
+  const [section,setSection]=useState('');
 
-  const faculty = props.faculty;
-  const subjects = props.subjects;
+  const fetchSubjectList=()=>{
+    fetch("/api/subject").then((res)=>res.json())
+    .then((data)=>{
+        data.map((item)=>(
+            setSubjectList((subjectList) => [...subjectList,{"cname":item.courseName,"cid":item.courseCode}])     
+         ))
+    })
+    console.log(subjectList) 
+ }
 
-  let [courseCodeSelectList,setCourseCodeSelectList]=useState([]);
-  let [facultyIDSelectList,setFacultyIDSelectList]=useState([]);
-  let [facultySelectList,setFacultySelectList]=useState([]);
-  let [subjectSelectList,setSubjectSelectList]=useState([]);
-
-  const fetchCourseCodeSelectList=() => {
-    subjects.map((item,index)=>(
-        setCourseCodeSelectList((courseCodeSelectList) => [...courseCodeSelectList,item.courseCode])        
-    ))
-    console.log(courseCodeSelectList);
-  }
-
-  const fetchFacultyIDSelectList=() => {
-    faculty.map((item,index)=>(
-        setFacultyIDSelectList((facultyIDSelectList) => [...facultyIDSelectList,item.fid])        
-    ))
-    console.log(facultyIDSelectList);
-  }
-
-  const fetchFacultySelectList=() => {
-    faculty.map((item,index)=>(
-        setFacultySelectList((facultySelectList) => [...facultySelectList,item.name])        
-    ))
-    console.log(facultySelectList);
-  }
-
-  const fetchSubjectSelectList=() => {
-      subjects.map((item,index)=>(
-          setSubjectSelectList((subjectSelectList) => [...subjectSelectList,item.courseName])        
-      ))
-      console.log(subjectSelectList); 
-  }
-
-
+ const fetchFacultyList=()=>{
+    fetch("/api/faculty").then((res)=>res.json())
+    .then((data)=>{
+         data.map((item)=>(
+            setFacultyList((facultyList) => [...facultyList,{"name":item.name,"fid":item.fid}])     
+         ))
+    })
+    console.log(facultyList);
+ }
     useEffect(() => {
-      setSubjectSelectList([]);
-      setFacultySelectList([]);
-      setCourseCodeSelectList([]);
-      setFacultyIDSelectList([]);
-      fetchFacultySelectList();
-      fetchSubjectSelectList();
-      fetchCourseCodeSelectList();
-      fetchFacultyIDSelectList();   
+      setSubjectList([]);
+      setFacultyList([]);
+      fetchSubjectList();
+      fetchFacultyList();   
  },[])
 
-    const [facultyID,setFacultyID]=useState('');
-    const [facultyName,setFacultyName]=useState('');
-    const [courseCode,setCourseCode]=useState('');
-    const [courseName,setCourseName]=useState('');
-    
-    const PostSubjectAllocation =async (e)=>{
-      e.preventDefault();
+    const PostSubjectAllocation =async ()=>{
       const res=await fetch("/api/subjectAllocation",{
         method:"POST",
         headers:{
           "Content-type":"application/json"
         },
         body:JSON.stringify({
-          facultyID,facultyName,courseCode,courseName
+          facultyID,
+          "facultyName":facultyList.find(({ fid }) => fid ===facultyID).name,
+          courseCode,
+          "courseName":subjectList.find(({ cid }) => cid ===courseCode).cname,
+          section
         })
       });
       const data=await res.json();
@@ -75,9 +56,8 @@ function SubjectAdditionModal(props) {
       }else{
         window.alert("Successfull");
         setFacultyID('');
-        setFacultyName('');
         setCourseCode('');
-        setCourseName('');
+        setSection('');
       }
     }
 
@@ -96,45 +76,31 @@ function SubjectAdditionModal(props) {
         <Modal.Body>
           <form>
               <div className="row container-fluid p-3">
-                <select className="col-sm-4" name="subjectsID" value={courseCode} onChange={ e => setCourseCode(e.target.value)}>
+                <select className="col-sm-4" value={courseCode} onChange={ e => setCourseCode(e.target.value)}>
                     <option>Select Course Code</option>
-                    {(courseCodeSelectList!=null)?
-                            courseCodeSelectList.map((item,index)=>(
-                              <option>{item}</option>
+                    {(subjectList!=null)?
+                            subjectList.map((item,index)=>(
+                              <option>{item.cid}</option>
                             )):""
                     }
                 </select>
-                <div className="col-sm-4"></div>
+               
                 <select className="col-sm-4" name="facultyID" value={facultyID} onChange={ e => setFacultyID(e.target.value)}>
                   <option>Select Faculty ID</option>
-                    {(facultyIDSelectList!=null)?
-                            facultyIDSelectList.map((item,index)=>(
-                              <option>{item}</option>
+                    {(facultyList!=null)?
+                            facultyList.map((item,index)=>(
+                              <option>{item.fid}</option>
                             )):""
                     } 
                 </select>
-                </div>
-
-                <div className="row container-fluid p-3">
-                <select className="col-sm-4" name="subjects" value={courseName} onChange={ e => setCourseName(e.target.value)}>
-                    <option>Select Subject</option>
-                    {(subjectSelectList!=null)?
-                            subjectSelectList.map((item,index)=>(
-                              <option>{item}</option>
-                            )):""
-                    }
+                <select className="col-sm-4" value={section} onChange={ e => setSection(e.target.value)}>
+                  <option>Select Section</option>
+                  <option>A</option>
+                  <option>B</option>
+                  <option>C</option>
                 </select>
-                <div className="col-sm-4"></div>
-                <select className="col-sm-4" name="faculty" value={facultyName} onChange={ e => setFacultyName(e.target.value)}>
-                  <option>Select Faculty</option>
-                    {(facultySelectList!=null)?
-                            facultySelectList.map((item,index)=>(
-                              <option>{item}</option>
-                            )):""
-                    } 
-                </select> 
-              </div>
-               
+                
+                </div>               
           </form>
         </Modal.Body>
         <Modal.Footer>

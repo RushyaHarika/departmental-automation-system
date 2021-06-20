@@ -9,7 +9,9 @@ function PatentAdditionModal(props) {
     const [applicationNumber,setApplicationNumber]=useState('');
     const [inventors,setInventors]=useState('');
     const [date,setDate]=useState('');
+    const [status,setStatus]=useState('');
     const params = useParams();
+
     
 
     const PostPatent =async ()=>{
@@ -20,7 +22,7 @@ function PatentAdditionModal(props) {
           "Content-type":"application/json"
         },
         body:JSON.stringify({
-          fid, title, applicationNumber, inventors, date
+          fid, title, applicationNumber, inventors, date,status
         })
       });
       const data=await res.json();
@@ -33,6 +35,7 @@ function PatentAdditionModal(props) {
         setApplicationNumber('');
         setInventors('');
         setDate('');
+        setStatus('');
       }    
       
     }
@@ -59,6 +62,12 @@ function PatentAdditionModal(props) {
               <input className='col-sm-6' type='textbox' value={inventors} onChange={ e => setInventors(e.target.value)}/>
               <label className='col-sm-4' >Date:</label>
               <input className='col-sm-6' type='date' value={date} onChange={ e => setDate(e.target.value)}/>
+              <label className='col-sm-4' ></label>
+              <select className='col-sm-6' type='textbox' value={status} onChange={ e => setStatus(e.target.value)}>
+                <option>Select status</option>
+                <option>Published</option>
+                <option>Granted</option>
+              </select><br/>
             </form>
         </Modal.Body>
         <Modal.Footer>

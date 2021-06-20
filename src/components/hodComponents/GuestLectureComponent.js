@@ -1,37 +1,53 @@
 import React,{useEffect,useState} from 'react';
-import Button from 'react-bootstrap/Button';
 import ReactHTMLTableToExcel from 'react-html-table-to-excel';
 import Table from 'react-bootstrap/Table';
+import Button from 'react-bootstrap/Button';
 
 
-function PatentComponent(props){
-    let [patentList,setPatentList]=useState([]);
+function GuestLecturesComponent(props){
+    let [lectureList,setLectureList]=useState(null);
+    let [facultyList,setFacultyList]=useState([]);
     const [from,setFrom]=useState(null);
     const [to,setTo]=useState(null);
 
-    const fetchPatentList=()=>{
-        fetch("/api/patent").then((res)=>res.json())
+    const fetchLectureList=()=>{
+        fetch("/api/lecture").then((res)=>res.json())
         .then((data)=>{
-           setPatentList(data);     
+           setLectureList(data);     
         })
     }
-    
-    const filterData=()=>{
-        console.log("filter")
-        fetch("/api/patent/"+from+"/"+to)
-        .then((res)=>res.json())
-        .then((data)=>setPatentList(data))             
+
+    const fetchFaculty=()=>{
+        fetch("/api/faculty").then((res)=>res.json())
+        .then((data)=>{
+             console.log("data",data);
+             data.map((item)=>(
+                setFacultyList((facultyList) => [...facultyList,{"name":item.name,"fid":item.fid}])     
+             ))
+            console.log("facultyList",facultyList)
+            
+        })
     }
 
+    const filterData=()=>{
+        console.log("filter")
+        fetch("/api/lecture/"+from+"/"+to)
+        .then((res)=>res.json())
+        .then((data)=>setLectureList(data))             
+    }
+
+
     useEffect(() => {
-        fetchPatentList(); 
+        fetchLectureList(); 
+        fetchFaculty();
+       // setLectureList([]);
    },[])
    
         return(
             
             props.display?
             <div className="container-fluid">
-            <h5  className="pt-5 pb-5">Patents/Copyrights Published/Granted</h5> 
+            <h5  className="pt-5 pb-5">Guest Lectures Presented</h5> 
 
             <div className="row pb-3 pt-3">
                 <div className="col-sm-1"></div>
@@ -44,30 +60,30 @@ function PatentComponent(props){
                 <Button variant="primary" onClick={filterData}>Filter</Button>               
             </div>
                 
-                <Table id="patents" responsive >
+                <Table id="lecture" responsive >
                    
                     <thead>
                         <tr>
                             <th>#</th>
-                            <th>Title of the Patent</th>
-                            <th>Application Number</th>
-                            <th>Inventors</th>
+                            <th>Guest Lecturer Details</th>
                             <th>Date</th>
-                            <th>Status</th>
+                            <th>Topic Name</th>
+                            <th>Number of participants</th>
+                            <th>College Details</th>
                         </tr>
                     </thead>
                     
                     <tbody>
-                        {(patentList!=null)?
-                            patentList.map((item,index)=>                                
+                        {(lectureList!=null)?
+                            lectureList.map((item,index)=>                                
                                 (
                                 <tr key={index}>       
                                     <td>{index+1}</td>
-                                    <td>{item.title}</td>
-                                    <td>{item.applicationNumber}</td>
-                                    <td>{item.inventors}</td>
+                                    <td>{facultyList.find(({ fid }) => fid === item.fid).name}</td>
                                     <td>{new Date(item.date).toDateString()}</td>
-                                    <td>{item.status}</td>
+                                    <td>{item.topic}</td>
+                                    <td>{item.participants}</td>
+                                    <td>{item.college}</td>
                                 </tr>
                             )
                             ):<tr></tr>
@@ -78,12 +94,12 @@ function PatentComponent(props){
                 <ReactHTMLTableToExcel 
                 id="test-table-xls-button"
                 className="download-table-xls-button btn-primary rounded p-1 float-right"
-                table="patents"
-                filename="Patents"
-                sheet="Patents"
-                buttonText="Download Patents Table"/>
+                table="lecture"
+                filename="guestLectures"
+                sheet="Guest_Lectures"
+                buttonText="Download Table"/>
                 
             </div>:''
         )
 }
-export default PatentComponent;
+export default GuestLecturesComponent;

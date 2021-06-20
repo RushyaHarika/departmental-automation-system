@@ -5,31 +5,12 @@ import Button from 'react-bootstrap/Button';
 import SubjectAdditionModal from './SubjectAdditionModal';
 
 function SubjectAllocationComponent(props){
+    window.list='';
     const [modalShow, setModalShow] = React.useState(false);
-    let [facultyList,setFacultyList]=useState(null);
-    let [subjectList,setSubjectList]=useState(null);
     let [subjectAllocationList,setSubjectAllocationList]=useState(null);
-
-  const fetchFacultyList=()=>{
-      fetch("/api/faculty").then((res)=>res.json())
-      .then((data)=>{
-         setFacultyList(data);
-         console.log("Faculty list"+facultyList);
-      }) 
-      setModalShow(false);
-  }
-
-  const fetchSubjectList=()=>{
-    fetch("/api/subject").then((res)=>res.json())
-    .then((data)=>{
-       setSubjectList(data);
-       console.log("Subject list"+subjectList);
-    }) 
-    setModalShow(false);
- }
-
+  
  const fetchSubjectAllocationList=()=>{
-    fetch("http://localhost:5000/api/subjectAllocation").then((res)=>res.json())
+    fetch("/api/subjectAllocation").then((res)=>res.json())
     .then((data)=>{
        setSubjectAllocationList(data);
        console.log("Subject Allocation list"+subjectAllocationList);
@@ -48,8 +29,6 @@ function SubjectAllocationComponent(props){
 
 
   useEffect(() => {
-       fetchFacultyList();
-       fetchSubjectList();
        fetchSubjectAllocationList();   
   },[])
 
@@ -66,6 +45,7 @@ function SubjectAllocationComponent(props){
                             <th>Course Name</th>
                             <th>Faculty ID</th>
                             <th>Faculty name</th>
+                            <th>Section</th>
                             <th>Remove Subject</th>
                         </tr>
                     </thead>
@@ -78,12 +58,13 @@ function SubjectAllocationComponent(props){
                                     <td>{item.courseName}</td>
                                     <td>{item.facultyID}</td>
                                     <td>{item.facultyName}</td>
+                                    <td>{item.section}</td>
                                     <td><Button variant="danger" onClick={()=>removeAllocation(`${item.courseCode}`)}>Remove</Button>{' '}</td>
                                 </tr>
                             )):""
                         }
                    <tr>   
-                        <td colSpan='5'></td>
+                        <td colSpan='6'></td>
                         <td><Button variant="primary" onClick={() => setModalShow(true)}>Allocate Subject</Button></td>
                     </tr>
                     </tbody>
@@ -92,12 +73,8 @@ function SubjectAllocationComponent(props){
                 <SubjectAdditionModal
                     show={modalShow}
                     onHide={() => {
-                        fetchFacultyList();
-                        fetchSubjectList();
                         fetchSubjectAllocationList();
                     }} 
-                    faculty={facultyList}
-                    subjects={subjectList}
                 />   
             </div>:''
         )

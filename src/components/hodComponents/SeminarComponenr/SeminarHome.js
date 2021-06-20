@@ -3,81 +3,80 @@ import React,{useEffect,useState} from 'react';
 import Table from 'react-bootstrap/Table';
 import Button from 'react-bootstrap/Button';
 
-import GuestLectureAdditionModal from './GuestLectureAdditionModal';
-import {useParams} from 'react-router-dom';
+import SeminarAdditionModal from './SeminarAdditionModal';
 
-function GuestLectureHomeComponent(props){
-
+function SeminarComponent(props){
     const [modalShow, setModalShow] = useState(false);
-    let [lectureList,setLectureList]=useState(null);
-    const params = useParams();
-    const [fid,setFid] = useState('');
-    
-    
-    const removeLecture=(fid)=>{
-        fetch("/api/lecture/"+fid,{
+    let [seminarList,setSeminarList]=useState(null);
+
+    const removeSeminar=(id)=>{
+        fetch("/api/seminar/"+id,{
             method: 'DELETE',  
         }).then((res)=>res.json())
         .then((data)=>console.log(data))
-        alert("Removed Successfully");
-        fetchLectureList();
+        alert("Removed Successfully in seminar table");
+        fetchSeminarList();
+
     }
 
-    const fetchLectureList=()=>{
-        fetch("/api/lecture/"+params.id).then((res)=>res.json()) //params.id => fid
+    const fetchSeminarList=()=>{
+        fetch("/api/seminar").then((res)=>res.json())
         .then((data)=>{
-           setLectureList(data);     
+           setSeminarList(data);     
         }) 
         setModalShow(false);
     }
-
     useEffect(() => {
-         fetchLectureList();
+         fetchSeminarList();   
     },[])
    
         return(
             props.display?
             <div className="container-fluid">
-            <h5  className="pt-5 pb-5">Guest Lectures Presented</h5> 
+            <h5  className="pt-5 pb-5">Seminars/Guest Lectures Organized</h5> 
                 
                 <Table responsive>
                     <thead>
                         <tr>
-                            <th>S.No.</th>
-                            <th>Topic Name</th>
+                            <th>#</th>
+                            <th>Topic</th>
+                            <th>Resource Person</th>
+                            <th>Venue</th>
                             <th>Date</th>
                             <th>Number of participants</th>
-                            <th>College Details</th>
+                            <th>Faculty/Student</th>
                         </tr>
                     </thead>
                     <tbody>
-                        {(lectureList!=null)?
-                            lectureList.map((item,index)=>(
+                        {(seminarList!=null)?
+                            seminarList.map((item,index)=>(
                                 <tr key={index}>
                                     <td>{index+1}</td>
                                     <td>{item.topic}</td>
+                                    <td>{item.resourcePerson}</td>
+                                    <td>{item.venue}</td>
                                     <td>{new Date(item.date).toDateString()}</td>
                                     <td>{item.participants}</td>
-                                    <td>{item.college}</td>
-                                    <td><Button variant="danger" onClick={()=>removeLecture(`${item._id}`)}>Remove</Button>{' '}</td>
+                                    <td>{item.who}</td>
+                                    <td><Button variant="danger" onClick={()=>removeSeminar(`${item._id}`)}>Remove</Button>{' '}</td>
                                 </tr>
                             )):<tr></tr>
                         }
                     <tr>   
-                        <td colSpan='5'></td>
-                        <td><Button variant="primary" onClick={() => setModalShow(true)}>Add Guest Lecture</Button></td>
+                        <td colSpan='6'></td>
+                        <td><Button variant="primary" onClick={() => setModalShow(true)}>Add Seminar</Button></td>
                     </tr>
                     </tbody>
                 </Table>
 
                 
 
-      <GuestLectureAdditionModal
+      <SeminarAdditionModal
         show={modalShow}
-        onHide={()=>fetchLectureList()}
+        onHide={()=>fetchSeminarList()}
       />
                 
             </div>:''
         )
 }
-export default GuestLectureHomeComponent;
+export default SeminarComponent;

@@ -5,7 +5,7 @@ import {useParams} from "react-router-dom";
 
 function SyllabusAdditionModal(props) {
     const params=useParams();
-    const facultyId=params.fid; 
+    const facultyId=params.id; 
     const [sname,setSname]=useState('');
     const [syllabusCovered,setSyllabusCovered]=useState('');
     const [actualSyllabus,setActualSyllabus]=useState('');

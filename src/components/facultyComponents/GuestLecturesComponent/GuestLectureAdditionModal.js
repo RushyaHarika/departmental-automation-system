@@ -12,8 +12,7 @@ function GuestLectureAdditionModal(props) {
     const params = useParams();
     
 
-    const PostLecture =async ()=>{
-      window.alert(fid);  
+    const PostLecture =async ()=>{ 
       const res=await fetch("/api/lecture",{
         method:"POST",
         headers:{
