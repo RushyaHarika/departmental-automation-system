@@ -3,12 +3,13 @@ const bodyParser=require("body-parser");
 const mongoose=require("mongoose");
 const shortid=require("shortid");
 const bcrypt = require('bcrypt');
+const cors = require('cors');
 const multer = require('multer');
 
 const app=express();
 
-app.use(bodyParser.json({limit: '10mb'}));
-app.use(express.static('public'))
+app.use(bodyParser.json());
+app.use(cors({origin:true}))
 
 mongoose.connect("mongodb://localhost/departmental-automation-system-db",{
     useNewUrlParser:true,
@@ -24,50 +25,13 @@ const Login = mongoose.model("login", new mongoose.Schema({
         required:"Faculty Id is required",
         unique:true
     },
-    email:String,
-    password:String
-}))
-
-app.post("/api/login",async (req,res)=>{
-    const body = req.body;
-    const login=new Login(body);
-    const salt = await bcrypt.genSalt(10);
-    login.password = await bcrypt.hash(login.password, salt);
-    await login.save()
-});
-
-app.get("/api/login",async (req,res)=>{
-    const faculty=await Login.find({});
-    res.send(faculty);
-});
-
-app.post("/api/auth",async (req,res)=>{
-    const body = req.body;
-    const user = await Login.findOne({email: body.email});
-    console.log(body,user);
-    if(user){
-        const validPassword = await bcrypt.compare(body.password, user.password);
-
-    if(validPassword){
-        return res.status(200).json({message:"Valid password"});
-    } else {
-        return res.status(400).json({message:"Invalid password"});
+    email:{
+        type:String
+    },
+    password:{
+        type:String
     }
-} else {
-    return res.status(400).json({message:"User does not exist"});   
-} 
-});
-
-/** To get faculty id based on email */
-app.get("/api/fid/:id",async (req,res)=>{
-    const f=await Faculty.findOne({email: req.params.id});
-    res.send(f);
-});
-
-app.delete("/api/login/:id",async(req,res)=>{
-    const deletedFaculty=await Login.deleteOne({fid:req.params.id});
-    res.send(deletedFaculty);
-})
+}))
 
 /*Faculty*/
 const Faculty=mongoose.model("faculty",new mongoose.Schema({
@@ -77,66 +41,23 @@ const Faculty=mongoose.model("faculty",new mongoose.Schema({
         required:"Faculty Id is required",
         unique:true
     },
-    name:String,
-    mobile:Number,
-    qualification:String,
+    name:{
+        type:String
+    },
+    mobile:{
+        type:Number
+    },
+    qualification:{
+        type:String
+    },
     email:{
         type:String,
         required:"Faculty email is required"
     },
-    designation:String
+    designation:{
+        type:String
+    }
 }))
-
-/** Faculty Data */
-app.get("/api/faculty",async (req,res)=>{
-    const faculty=await Faculty.find({});
-    res.send(faculty);
-});
-
-
-app.post("/api/faculty",async (req,res)=>{
-    const newFaculty=new Faculty(req.body);
-    await newFaculty.save()
-    .then((response) =>{
-        console.log(response);
-        res.send(response);
-       })
-       .catch( (error)=> {
-        let err="";
-        if(error.code===11000){
-            err="Faculty id must be unique";  
-        }
-        else if(error.errors!==undefined){
-            if(error.errors.fid!==undefined){
-                err=error.errors.fid.properties.message;
-            }
-            else if(error.errors.mobile!==undefined){
-                if(error.errors.mobile.kind==="Number"){
-                    err="Mobile number must be a number";
-                }
-            }
-            else if(error.errors.email!==undefined){
-                err=error.errors.email.properties.message;
-            }
-
-        } 
-        return res.status(400).json({
-            "error": err
-        })
-        
-       })
-});
-
-app.delete("/api/faculty/:id",async(req,res)=>{
-    const deletedFaculty=await Faculty.deleteOne({fid:req.params.id});
-    res.send(deletedFaculty);
-})
-
-app.put("/api/faculty/:id",async(req,res)=>{
-    const updatedFaculty=await Faculty.updateOne({ fid: req.params.id },{ $set: {name:req.body.name, mobile:req.body.mobile, qualification:req.body.qualification, designation:req.body.designation} });
-    res.send(updatedFaculty);
-})
-
 
 /*subject Addition*/
 const Subject=mongoose.model("subject",new mongoose.Schema({
@@ -146,50 +67,13 @@ const Subject=mongoose.model("subject",new mongoose.Schema({
         required:"Course Code is required",
         unique:true
     },
-    courseName:String,
-    semester:String,
+    courseName:{
+        type:String
+    },
+    semester:{
+        type:String
+        },
 }))
-
-app.get("/api/subject",async (req,res)=>{
-    const subject=await Subject.find({});
-    res.send(subject);
-});
-
-app.post("/api/subject",async(req,res) => {
-    const newSubject = new Subject(req.body);
-    await newSubject.save()
-    .then((response) =>{
-        console.log(response);
-        res.send(response);
-       })
-       .catch( (error)=> {
-        let err="";
-        if(error.code===11000){
-            err="Course code must be unique";  
-        }
-        else if(error.errors!==undefined){
-            if(error.errors.courseCode!==undefined){
-                err=error.errors.courseCode.properties.message;
-            }
-        } 
-        return res.status(400).json({
-            "error": err
-        })
-        
-       })
-    
-})
-
-app.delete("/api/subject/:id",async(req,res)=>{
-    const deletedSubject=await Subject.deleteOne({courseCode:req.params.id});
-    res.send(deletedSubject);
-})
-
-app.put("/api/subject/:id",async(req,res)=>{
-    const updatedSubject=await Subject.updateOne({courseCode:req.params.id },{ $set:{courseName:req.body.courseName, semester:req.body.semester}});
-    res.send(updatedSubject);
-})
-
 
 /*Subject Allocation*/
 const SubjectAllocation=mongoose.model("subjectAllocation",new mongoose.Schema({
@@ -247,6 +131,8 @@ app.delete("/api/subjectAllocation/:id",async(req,res)=>{
     res.send(deletedAllocation);
 })
 
+
+
 /** Syllabus Status*/
  const Syllabus=mongoose.model("syllabus",new mongoose.Schema({
     _id:{type:String, default:shortid.generate},
@@ -274,6 +160,326 @@ app.delete("/api/subjectAllocation/:id",async(req,res)=>{
     }
 
 }))
+
+
+/**Guest Lecture */
+const GuestLecture=mongoose.model("lecture",new mongoose.Schema({
+    _id:{type:String, default:shortid.generate},
+    fid:{
+        type:String,
+        required:true
+    },
+    topic:{
+        type:String,
+        required:"Lecture topic is required"
+    },
+    date:{
+        type:Date,
+        required:"Date is required"
+    },
+    participants:{
+        type:String
+    },
+    college:{
+        type:String
+    }
+}))
+
+
+/**Seminars and Guest Lectures Organized */
+const Seminar=mongoose.model("seminar",new mongoose.Schema({
+    _id:{type:String, default:shortid.generate},
+    topic:{
+        type:String,
+        required:"Title topic is required"
+    },
+    resourcePerson:{
+        type:String
+    },
+    venue:{
+        type:String
+    },
+    date:{
+        type:Date,
+        required:"Date is required"
+    },
+    participants:{
+        type:Number
+    },
+    who:{
+        type:String
+    }
+}))
+
+
+
+/*FDP Organized*/
+const FDPOrganized = mongoose.model("fdpOrganized", new mongoose.Schema({
+    _id:{type:String, default:shortid.generate},
+    name:{
+        type:String,
+        required:"Name of the program is required"
+    },
+    org:String,
+    venue:String,
+    resourcePerson:String,
+    date: {
+        type: Date,
+        required:"Date is required"
+    },
+    nop:String,
+    stuFac:String
+}))
+
+/**Login */
+app.post("/api/login",async (req,res)=>{
+    const body = req.body;
+    const login=new Login(body);
+    const salt = await bcrypt.genSalt(10);
+    login.password = await bcrypt.hash(login.password, salt);
+    await login.save()
+});
+
+app.get("/api/login",async (req,res)=>{
+    const faculty=await Login.find({});
+    res.send(faculty);
+});
+
+app.put("/api/login/:id",async (req,res)=>{
+    const body = req.body;
+    const login=new Login(body);
+    const salt = await bcrypt.genSalt(10);
+    login.password = await bcrypt.hash(login.password, salt);
+    const updatedPassword=await Login.updateOne({ fid: req.params.id },{ $set: {password:login.password} });
+    res.send(updatedPassword);
+})
+
+app.post("/api/auth",async (req,res)=>{
+    const body = req.body;
+    const user = await Login.findOne({email: body.email});
+    console.log(body,user);
+    if(user){
+        const validPassword = await bcrypt.compare(body.password, user.password);
+
+    if(validPassword){
+        return res.status(200).json({message:"Valid password"});
+    } else {
+        return res.status(400).json({message:"Invalid password"});
+    }
+} else {
+    return res.status(400).json({message:"User does not exist"});   
+} 
+});
+
+/** To get faculty id based on email */
+app.get("/api/fid/:id",async (req,res)=>{
+    const f=await Faculty.findOne({email: req.params.id});
+    res.send(f);
+});
+
+app.delete("/api/login/:id",async(req,res)=>{
+    const deletedFaculty=await Login.deleteOne({fid:req.params.id});
+    res.send(deletedFaculty);
+})
+
+/**FDPs and workshops attended */
+const FDP = mongoose.model("fdp", new mongoose.Schema({
+    _id:{type:String, default:shortid.generate},
+    fid:{
+        type:String,
+        required:true
+    },
+    fdpName:{
+        type:String,
+        required:"Name of the program is required"
+    },
+    org:{
+        type:String
+    },
+    from: {
+        type: Date,
+        required:"Date is required"
+    },
+    to:{
+        type: Date
+    },
+    file_mimetype:String,
+    file_path:  String,
+    file_name:String
+}))
+const uploadFdp = multer({
+    storage: multer.diskStorage({
+      destination(req, file, cb) {
+        cb(null, './public/uploadedImages');
+        console.log("file",file)
+      },
+      filename(req, file, cb) {
+        cb(null, `${new Date().getTime()}_${file.originalname}`);
+      }
+    }),
+    limits: {
+      fileSize: 1000000 // max file size 1MB = 1000000 bytes
+    },
+    fileFilter(req, file, cb) {
+      if (!file.originalname.match(/\.(pdf)$/)) {
+        return cb(
+          new Error(
+            'only upload files with pdf format.'
+          )
+        );
+      }
+      cb(undefined, true); // continue with upload
+    }
+  });
+  
+
+/**FDPs workshops and seminars attended */
+app.post("/api/fdp",uploadFdp.single('pdf'),async (req,res)=>{
+    const {fid,fdpName,org,from,to}=req.body;
+    const newFdp=new FDP({
+        fid,fdpName,org,from,to,
+        "file_mimetype":req.file.mimetype,
+       "file_path":req.file.path,
+       "file_name":req.file.filename
+    });
+    await newFdp.save()
+    .then((response) =>{
+        console.log(response);
+        res.send(response);
+       })
+       .catch( (error)=> {
+        let err="";
+        if(error.errors!==undefined){
+            if(error.errors.fdpName!==undefined){
+                err=error.errors.name.properties.message;
+            }
+            else if(error.errors.from!==undefined){
+                err=error.errors.from.properties.message;
+            }
+        } 
+        return res.status(400).json({
+            "error": err
+        })
+        
+       })
+})
+
+app.get("/api/fdp/download/:id",async(req,res)=>{
+    try {
+      const file = await FDP.findById(req.params.id);
+      console.log(file.file_path);
+      res.set({
+        'content-type': file.file_mimetype
+      });
+      res.sendFile(file.file_path,{root:__dirname});
+      //console.log(res);
+    } catch (error) {
+      res.status(400).send('Error while downloading file. Try again later.');
+    }
+})
+
+app.get("/api/fdp",async (req,res)=>{
+    const fdp=await FDP.find({});
+    res.send(fdp);
+});
+app.get("/api/fdp/:id",async (req,res)=>{
+    const fdp=await FDP.find({fid:req.params.id});
+    res.send(fdp);
+});
+app.delete("/api/fdp/:id",async(req,res)=>{
+    const deletedFDP=await FDP.deleteOne({_id:req.params.id});
+    res.send(deletedFDP);
+})
+app.put("/api/fdp/:id",async(req,res)=>{
+    const updatedFdp=await FDP.updateOne({ _id:req.params.id },{ $set: {fdpName:req.body.fdpName, org:req.body.org, from:req.body.from, to:req.body.to} });
+    res.send(updatedFdp);
+})
+
+/** Faculty Data */
+app.get("/api/faculty",async (req,res)=>{
+    const faculty=await Faculty.find({});
+    res.send(faculty);
+});
+
+
+app.post("/api/faculty",async (req,res)=>{
+    const newFaculty=new Faculty(req.body);
+    await newFaculty.save()
+    .then((response) =>{
+        console.log(response);
+        res.send(response);
+       })
+       .catch( (error)=> {
+        let err="";
+        if(error.code===11000){
+            err="Faculty id must be unique";  
+        }
+        else if(error.errors!==undefined){
+            if(error.errors.fid!==undefined){
+                err=error.errors.fid.properties.message;
+            }
+            else if(error.errors.email!==undefined){
+                err=error.errors.email.properties.message;
+            }
+
+        } 
+        return res.status(400).json({
+            "error": err
+        })
+        
+       })
+});
+
+app.delete("/api/faculty/:id",async(req,res)=>{
+    const deletedFaculty=await Faculty.deleteOne({fid:req.params.id});
+    res.send(deletedFaculty);
+})
+
+app.put("/api/faculty/:id",async(req,res)=>{
+    const updatedFaculty=await Faculty.updateOne({ fid: req.params.id },{ $set: {name:req.body.name, mobile:req.body.mobile, qualification:req.body.qualification, designation:req.body.designation} });
+    res.send(updatedFaculty);
+})
+
+/** Subject Data */
+app.get("/api/subject",async (req,res)=>{
+    const subject=await Subject.find({});
+    res.send(subject);
+});
+
+app.post("/api/subject",async(req,res) => {
+    const newSubject = new Subject(req.body);
+    await newSubject.save()
+    .then((response) =>{
+        console.log(response);
+        res.send(response);
+       })
+       .catch( (error)=> {
+        let err="";
+        if(error.code===11000){
+            err="Course code must be unique";  
+        }
+        else if(error.errors!==undefined){
+            if(error.errors.courseCode!==undefined){
+                err=error.errors.courseCode.properties.message;
+            }
+        } 
+        return res.status(400).json({
+            "error": err
+        })
+        
+       })
+    
+})
+
+app.delete("/api/subject/:id",async(req,res)=>{
+    const deletedSubject=await Subject.deleteOne({courseCode:req.params.id});
+    res.send(deletedSubject);
+})
+
+app.put("/api/subject/:id",async(req,res)=>{
+    const updatedSubject=await Subject.updateOne({courseCode:req.params.id },{ $set:{courseName:req.body.courseName, semester:req.body.semester}});
+    res.send(updatedSubject);
+})
 
 /**Syllabus Data*/
 app.get("/api/syllabus/:fid",async (req,res)=>{
@@ -367,168 +573,16 @@ app.delete("/api/syllabus/:id",async(req,res)=>{
     const deletedSyllabus=await Syllabus.deleteOne({_id:req.params.id});
     res.send(deletedSyllabus);
 })
- 
 
-/**FDPs and workshops attended */
-const FDP = mongoose.model("fdp", new mongoose.Schema({
-    _id:{type:String, default:shortid.generate},
-    fid:{
-        type:String,
-        required:true
-    },
-    fdpName:{
-        type:String,
-        required:"Name of the program is required"
-    },
-    org:{
-        type:String
-    },
-    from: {
-        type: Date,
-        required:"Date is required"
-    },
-    to:{
-        type: Date
-    },
-    file_mimetype:String,
-    file_path:  String,
-    file_name:String
-}))
-const uploadFdp = multer({
-    storage: multer.diskStorage({
-      destination(req, file, cb) {
-        cb(null, './public/uploadedImages');
-        console.log("file",file)
-      },
-      filename(req, file, cb) {
-        cb(null, `${new Date().getTime()}_${file.originalname}`);
-      }
-    }),
-    limits: {
-      fileSize: 1000000 // max file size 1MB = 1000000 bytes
-    },
-    fileFilter(req, file, cb) {
-      if (!file.originalname.match(/\.(pdf)$/)) {
-        return cb(
-          new Error(
-            'only upload files with pdf format.'
-          )
-        );
-      }
-      cb(undefined, true); // continue with upload
-    }
-  });
-  
-/**FDPs workshops and seminars attended */
-app.post("/api/fdp",uploadFdp.single('pdf'),async (req,res)=>{
-    const {fid,fdpName,org,from,to}=req.body;
-    const newFdp=new FDP({
-        fid,fdpName,org,from,to,
-        "file_mimetype":req.file.mimetype,
-       "file_path":req.file.path,
-       "file_name":req.file.filename
-    });
-    await newFdp.save()
-    .then((response) =>{
-        console.log(response);
-        res.send(response);
-       })
-       .catch( (error)=> {
-        let err="";
-        if(error.errors!==undefined){
-            if(error.errors.fdpName!==undefined){
-                err=error.errors.name.properties.message;
-            }
-            else if(error.errors.from!==undefined){
-                err=error.errors.from.properties.message;
-            }
-        } 
-        return res.status(400).json({
-            "error": err
-        })
-        
-       })
+app.put("/api/syllabus/:id",async(req,res)=>{
+    const updatedSyllabus=await Syllabus.updateOne({ _id: req.params.id },{ $set: {sname:req.body.sname, syllabusCovered:req.body.syllabusCovered, actualSyllabus:req.body.actualSyllabus, topicCovered:req.body.topicCovered, noc:req.body.noc, remarks:req.body.remarks, date:req.body.date, section:req.body.section, year:req.body.year} });
+    res.send(updatedSyllabus);
 })
-
-app.get("/api/fdp/download/:id",async(req,res)=>{
-    try {
-      const file = await FDP.findById(req.params.id);
-      console.log(file.file_path);
-      res.set({
-        'content-type': file.file_mimetype
-      });
-      res.sendFile(file.file_path,{root:__dirname});
-      //console.log(res);
-    } catch (error) {
-      res.status(400).send('Error while downloading file. Try again later.');
-    }
-})
-
-app.get("/api/fdp",async (req,res)=>{
-    const fdp=await FDP.find({});
-    res.send(fdp);
-});
-app.get("/api/fdp/:id",async (req,res)=>{
-    const fdp=await FDP.find({fid:req.params.id});
-    res.send(fdp);
-});
-app.delete("/api/fdp/:id",async(req,res)=>{
-    const deletedFDP=await FDP.deleteOne({_id:req.params.id});
-    res.send(deletedFDP);
-})
-
-app.get("/api/fdp/:from/:to",async (req,res)=>{
-    let fromP=req.params.from;
-    let toP=req.params.to;
-    let fromQuery="";
-    let toQuery="";
-
-    if(fromP!=="null"){
-        fromQuery="{\"$gte\":\""+ new Date(fromP)+"\","
-    }else{
-        fromQuery="{"
-    }
-    if(toP!=="null"){
-        toQuery="\"$lte\":\""+ new Date(toP)+"\"}"
-    }else{
-        toQuery="}"
-    }
-
-    console.log(fromQuery+toQuery);
-    const lecture=await FDP.find({
-        "from":JSON.parse(fromQuery+toQuery)
-    });
-    console.log(lecture);
-    res.send(lecture);
-});
-
-/**Guest Lecture */
-const GuestLecture=mongoose.model("lecture",new mongoose.Schema({
-    _id:{type:String, default:shortid.generate},
-    fid:{
-        type:String,
-        required:true
-    },
-    topic:{
-        type:String,
-        required:"Lecture topic is required"
-    },
-    date:{
-        type:Date,
-        required:"Date is required"
-    },
-    participants:{
-        type:String
-    },
-    college:{
-        type:String
-    }
-}))
 
 /**Guest Lecture */
 app.post("/api/lecture",async (req,res)=>{
     const newLecture=new GuestLecture(req.body);
-    await newLecture.save()
+    const savedLecture=await newLecture.save()
     .then((response) =>{
         console.log(response);
         res.send(response);
@@ -548,45 +602,22 @@ app.post("/api/lecture",async (req,res)=>{
         
        })
 })
-app.get("/api/lecture",async (req,res)=>{
-    const lecture=await GuestLecture.find({});
-    res.send(lecture);
-});
-
 app.get("/api/lecture/:id",async (req,res)=>{
     const lecture=await GuestLecture.find({fid:req.params.id});
+    res.send(lecture);
+});
+app.get("/api/lecture/",async (req,res)=>{
+    const lecture=await GuestLecture.find({});
     res.send(lecture);
 });
 app.delete("/api/lecture/:id",async(req,res)=>{
     const deletedLecture=await GuestLecture.deleteOne({_id:req.params.id});
     res.send(deletedLecture);
 })
-
-app.get("/api/lecture/:from/:to",async (req,res)=>{
-    let fromP=req.params.from;
-    let toP=req.params.to;
-    let fromQuery="";
-    let toQuery="";
-
-    if(fromP!=="null"){
-        fromQuery="{\"$gte\":\""+ new Date(fromP)+"\","
-    }else{
-        fromQuery="{"
-    }
-    if(toP!=="null"){
-        toQuery="\"$lte\":\""+ new Date(toP)+"\"}"
-    }else{
-        toQuery="}"
-    }
-
-    console.log(fromQuery+toQuery);
-    const lecture=await GuestLecture.find({
-        "date":JSON.parse(fromQuery+toQuery)
-    });
-    console.log(lecture);
-    res.send(lecture);
-});
-
+app.put("/api/lecture/:id",async(req,res)=>{
+    const updatedLecture=await GuestLecture.updateOne({ _id: req.params.id },{ $set: {topic:req.body.topic, date:req.body.date, participants:req.body.participants, college:req.body.college} });
+    res.send(updatedLecture);
+})
 
 /**Patents */
 const Patent=mongoose.model("patent",new mongoose.Schema({
@@ -675,36 +706,15 @@ app.delete("/api/patent/:id",async(req,res)=>{
     const deletedPatent=await Patent.deleteOne({_id:req.params.id});
     res.send(deletedPatent);
 })
-
-/**Seminars and Guest Lectures Organized */
-const Seminar=mongoose.model("seminar",new mongoose.Schema({
-    _id:{type:String, default:shortid.generate},
-    topic:{
-        type:String,
-        required:"Title topic is required"
-    },
-    resourcePerson:{
-        type:String
-    },
-    venue:{
-        type:String
-    },
-    date:{
-        type:Date,
-        required:"Date is required"
-    },
-    participants:{
-        type:Number
-    },
-    who:{
-        type:String
-    }
-}))
+app.put("/api/patent/:id",async(req,res)=>{
+    const updatedPatent=await Patent.updateOne({ _id:req.params.id },{ $set: {title:req.body.title, applicationNumber:req.body.applicationNumber, inventors:req.body.inventors, date:req.body.date, status:req.body.status} });
+    res.send(updatedPatent);
+})
 
 /**Seminars and Guest Lectures Organized */
 app.post("/api/seminar",async (req,res)=>{
     const newSeminar=new Seminar(req.body);
-    await newSeminar.save()
+    const savedSeminar=await newSeminar.save()
     .then((response) =>{
         console.log(response);
         res.send(response);
@@ -733,57 +743,6 @@ app.delete("/api/seminar/:id",async(req,res)=>{
     res.send(deletedSeminar);
 })
 
-/*FDP Organized*/
-const FDPOrganized = mongoose.model("fdpOrganized", new mongoose.Schema({
-    _id:{type:String, default:shortid.generate},
-    name:{
-        type:String,
-        required:"Name of the program is required"
-    },
-    org:String,
-    venue:String,
-    resourcePerson:String,
-    date: {
-        type: Date,
-        required:"Date is required"
-    },
-    nop:String,
-    stuFac:String
-}))
-
-/**FDP Organized */
-app.post("/api/fdpOrganized",async (req,res)=>{
-    const newLecture=new FDPOrganized(req.body);
-    await newLecture.save()
-    .then((response) =>{
-        console.log(response);
-        res.send(response);
-       })
-       .catch( (error)=> {
-        let err="";
-        if(error.errors!==undefined){
-            if(error.errors.name!==undefined){
-                err=error.errors.name.properties.message;
-            } else if(error.errors.date!==undefined){
-                err=error.errors.date.properties.message;
-            }
-        } 
-        return res.status(400).json({
-            "error": err
-        })
-        
-       })
-})
-
-app.get("/api/fdpOrganized",async (req,res)=>{
-    const lecture=await FDPOrganized.find({});
-    res.send(lecture);
-});
-
-app.delete("/api/fdpOrganized/:id",async(req,res)=>{
-    const deletedLecture=await FDPOrganized.deleteOne({_id:req.params.id});
-    res.send(deletedLecture);
-})
 
 /** Certifications */
 const Certification=mongoose.model("certification",new mongoose.Schema({
@@ -919,7 +878,12 @@ app.get("/api/certification/:year/:cycle",async (req,res)=>{
     res.send(certification);
 });
 
-/** Certifications */
+app.put("/api/certification/:id",async(req,res)=>{
+    const updatedCertification=await Certification.updateOne({ _id:req.params.id },{ $set: {courseName:req.body.courseName, score:req.body.score, issuedBy:req.body.issuedBy, certificate:req.body.certificate, topper:req.body.topper, year:req.body.year, monthFrom:req.body.monthFrom, monthTo:req.body.monthTo} });
+    res.send(updatedCertification);
+})
+
+/** LessonPlan */
 const LessonPlan=mongoose.model("lessonPlan",new mongoose.Schema({
     _id:{type:String, default:shortid.generate},
     fid:{
@@ -1014,6 +978,40 @@ app.get("/api/lessonPlan/:id",async (req,res)=>{
 app.delete("/api/lessonPlan/:id",async(req,res)=>{
     const deletedLessonPlan=await LessonPlan.deleteOne({_id:req.params.id});
     res.send(deletedLessonPlan);
+})
+
+/**FDP Organized */
+app.post("/api/fdpOrganized",async (req,res)=>{
+    const newLecture=new FDPOrganized(req.body);
+    await newLecture.save()
+    .then((response) =>{
+        console.log(response);
+        res.send(response);
+       })
+       .catch( (error)=> {
+        let err="";
+        if(error.errors!==undefined){
+            if(error.errors.name!==undefined){
+                err=error.errors.name.properties.message;
+            } else if(error.errors.date!==undefined){
+                err=error.errors.date.properties.message;
+            }
+        } 
+        return res.status(400).json({
+            "error": err
+        })
+        
+       })
+})
+
+app.get("/api/fdpOrganized",async (req,res)=>{
+    const lecture=await FDPOrganized.find({});
+    res.send(lecture);
+});
+
+app.delete("/api/fdpOrganized/:id",async(req,res)=>{
+    const deletedLecture=await FDPOrganized.deleteOne({_id:req.params.id});
+    res.send(deletedLecture);
 })
 
 /** Awards */
@@ -1147,6 +1145,11 @@ app.get("/api/award/:from/:to",async (req,res)=>{
     console.log(award);
     res.send(award);
 });
+app.put("/api/award/:id",async(req,res)=>{
+    const updatedAward=await Award.updateOne({ _id:req.params.id },{ $set: {title:req.body.title, date:req.body.date, issuedBy:req.body.issuedBy, description:req.body.description} });
+    res.send(updatedAward);
+})
+
 
 /** Journals */
 const Journal=mongoose.model("journal",new mongoose.Schema({
@@ -1223,6 +1226,10 @@ app.delete("/api/journal/:id",async(req,res)=>{
     const deletedJournal=await Journal.deleteOne({_id:req.params.id});
     res.send(deletedJournal);
 })
+app.put("/api/journal/:id",async(req,res)=>{
+    const updatedJournal=await Journal.updateOne({ _id: req.params.id },{ $set: {title:req.body.title, author:req.body.author, authPos:req.body.authPos, nameOfJournal:req.body.nameOfJournal, impact:req.body.impact, volume:req.body.volume, issue:req.body.issue, page:req.body.page, date:req.body.date, type:req.body.type} });
+    res.send(updatedJournal);
+})
 
 /** Conferences */
 const Conference=mongoose.model("conference",new mongoose.Schema({
@@ -1298,6 +1305,10 @@ app.get("/api/conference/:id",async (req,res)=>{
 app.delete("/api/conference/:id",async(req,res)=>{
     const deletedConference=await Conference.deleteOne({_id:req.params.id});
     res.send(deletedConference);
+})
+app.put("/api/conference/:id",async(req,res)=>{
+    const updatedConference=await Conference.updateOne({ _id: req.params.id },{ $set: {title:req.body.title, author:req.body.author, authPos:req.body.authPos, nameOfConference:req.body.nameOfConference, impact:req.body.impact, volume:req.body.volume, issue:req.body.issue, page:req.body.page, date:req.body.date, type:req.body.type} });
+    res.send(updatedConference);
 })
 
 const port=process.env.PORT || 5000;
