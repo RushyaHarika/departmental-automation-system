@@ -3,10 +3,8 @@ import React,{useEffect,useState} from 'react';
 import Table from 'react-bootstrap/Table';
 import Button from 'react-bootstrap/Button';
 
-import SubjectAdditionModal from './SubjectAdditionModal';
 import SubjectEditModal from './SubjectEditModal';
-
-window.list='';
+import SubjectAdditionModal from './SubjectAdditionModal';
 
 function SubjectDataComponent(props){
     const [modalShow, setModalShow] = useState(false);
@@ -26,6 +24,10 @@ function SubjectDataComponent(props){
     
 
 const removeSubject=(courseCode)=>{
+    let res=window.confirm("Row will be deleted");
+        if(res===false){
+            return;
+        }
     fetch("/api/subject/"+courseCode,{
         method: 'DELETE',  
     }).then((res)=>res.json())
@@ -81,7 +83,7 @@ const removeSubject=(courseCode)=>{
         onHide={()=>fetchSubjectList()}
       />
 
-    <SubjectEditModal
+<SubjectEditModal
         show={editModalShow}
         onHide={()=>fetchSubjectList()}
         editItem = {editItem}
