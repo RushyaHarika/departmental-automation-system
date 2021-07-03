@@ -4,9 +4,14 @@ import Table from 'react-bootstrap/Table';
 import Button from 'react-bootstrap/Button';
 
 import SubjectAdditionModal from './SubjectAdditionModal';
+import SubjectEditModal from './SubjectEditModal';
+
 window.list='';
+
 function SubjectDataComponent(props){
     const [modalShow, setModalShow] = useState(false);
+    const [editModalShow, setEditModalShow] = useState(false);
+    const [editItem,setEditItem] = useState('');
     let [subjectList,setSubjectList]=useState(null);
 
     const fetchSubjectList=()=>{
@@ -15,6 +20,7 @@ function SubjectDataComponent(props){
            setSubjectList(data);
         })
         setModalShow(false);
+        setEditModalShow(false);
     }
 
     
@@ -44,6 +50,7 @@ const removeSubject=(courseCode)=>{
                             <th>Course Code</th>
                             <th>Course Name</th>
                             <th>Semester</th>
+                            <th>Edit Subject</th>
                             <th>Remove Subject</th>
                         </tr>
                     </thead>
@@ -55,12 +62,13 @@ const removeSubject=(courseCode)=>{
                                     <td>{item.courseCode}</td>
                                     <td>{item.courseName}</td>
                                     <td>{item.semester}</td>
+                                    <td><Button variant="primary" onClick={()=> { setEditItem(item);setEditModalShow(true);}}>Edit</Button>{' '}</td>
                                     <td><Button variant="danger" onClick={()=>removeSubject(`${item.courseCode}`)}>Remove</Button>{' '}</td>
                                 </tr>
                             )):""
                         }
                     <tr>   
-                        <td colSpan='4'></td>
+                        <td colSpan='5'></td>
                         <td><Button variant="primary" onClick={() => setModalShow(true)}>Add Subject</Button></td>
                     </tr>
                     </tbody>
@@ -71,6 +79,12 @@ const removeSubject=(courseCode)=>{
       <SubjectAdditionModal
         show={modalShow}
         onHide={()=>fetchSubjectList()}
+      />
+
+    <SubjectEditModal
+        show={editModalShow}
+        onHide={()=>fetchSubjectList()}
+        editItem = {editItem}
       />
                 
             </div>:''
