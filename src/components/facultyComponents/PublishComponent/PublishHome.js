@@ -5,7 +5,12 @@ import Button from 'react-bootstrap/Button';
 
 import JournalAdditionModal from './JournalAdditionModal';
 import ConferenceAdditionModal from './conferenceAdditionModal';
+
+import JournalEditModal from './JournalEditModal';
+import ConferenceEditModal from './ConferenceEditModal';
+
 import {useParams} from 'react-router-dom';
+import { param } from 'jquery';
 
 function PublishHomeComponent(props){
 
@@ -13,10 +18,18 @@ function PublishHomeComponent(props){
     const [conference,setConference]=useState(false);
 
     const [modalShow, setModalShow] = useState(false);
+
+    const [editJournalModalShow, setEditJournalModalShow] = useState(false);
+    const [editJournalItem,setEditJournalItem] = useState('');
+
+    const [editConferenceModalShow, setEditConferenceModalShow] = useState(false);
+    const [editConferenceItem,setEditConferenceItem] = useState('');
+
     let [journalList,setJournalList]=useState(null);
     let [conferenceList,setConferenceList]=useState(null);
     const params = useParams();
-    const [fid,setFid] = useState('');
+    const fid = params.id;
+
 
     const handle=(e)=>{
         e.preventDefault();
@@ -40,6 +53,7 @@ function PublishHomeComponent(props){
            setJournalList(data);     
         }) 
         setModalShow(false);
+        setEditJournalModalShow(false);
     }
 
     const removeConference=(fid)=>{
@@ -57,6 +71,7 @@ function PublishHomeComponent(props){
            setConferenceList(data);     
         }) 
         setModalShow(false);
+        setEditConferenceModalShow(false);
     }
 
     useEffect(() => {
@@ -93,6 +108,8 @@ function PublishHomeComponent(props){
                             <th>Page Number</th>
                             <th>Month and Year</th>
                             <th>Type of journal</th>
+                            <th>Edit</th>
+                            <th>Remove</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -110,12 +127,13 @@ function PublishHomeComponent(props){
                                     <td>{item.page}</td>
                                     <td>{new Date(item.date).toDateString()}</td>
                                     <td>{item.type}</td>
+                                    <td><Button variant="primary" onClick={()=> { setEditJournalItem(item);setEditJournalModalShow(true);}}>Edit</Button>{' '}</td>
                                     <td><Button variant="danger" onClick={()=>removeJournal(`${item._id}`)}>Remove</Button>{' '}</td>
                                 </tr>
                             )):<tr></tr>
                         }
                     <tr>   
-                        <td colSpan='11'></td>
+                        <td colSpan='12'></td>
                         <td><Button variant="primary" onClick={() => setModalShow(true)}>Add Journal</Button></td>
                     </tr>
                     </tbody>
@@ -124,6 +142,12 @@ function PublishHomeComponent(props){
                     show={modalShow}
                     onHide={()=>fetchJournalList()}
                 />
+
+                <JournalEditModal
+                    show={editJournalModalShow}
+                    onHide={()=>fetchJournalList()}
+                    editItem = {editJournalItem}
+                /> 
                 </React.Fragment>
 
                :
@@ -143,6 +167,8 @@ function PublishHomeComponent(props){
                             <th>Page Number</th>
                             <th>Month and Year</th>
                             <th>Type of Conference</th>
+                            <th>Edit</th>
+                            <th>Remove</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -160,12 +186,13 @@ function PublishHomeComponent(props){
                                     <td>{item.page}</td>
                                     <td>{new Date(item.date).toDateString()}</td>
                                     <td>{item.type}</td>
+                                    <td><Button variant="primary" onClick={()=> { setEditConferenceItem(item);setEditConferenceModalShow(true);}}>Edit</Button>{' '}</td>
                                     <td><Button variant="danger" onClick={()=>removeConference(`${item._id}`)}>Remove</Button>{' '}</td>
                                 </tr>
                             )):<tr></tr>
                         }
                     <tr>   
-                        <td colSpan='11'></td>
+                        <td colSpan='12'></td>
                         <td><Button variant="primary" onClick={() => setModalShow(true)}>Add Conference</Button></td>
                     </tr>
                     </tbody>
@@ -174,6 +201,11 @@ function PublishHomeComponent(props){
                     show={modalShow}
                     onHide={()=>fetchConferenceList()}
                 />
+                <ConferenceEditModal
+                    show={editConferenceModalShow}
+                    onHide={()=>fetchConferenceList()}
+                    editItem = {editConferenceItem}
+                /> 
                 </React.Fragment>                
                 }
 

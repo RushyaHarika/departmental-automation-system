@@ -4,11 +4,15 @@ import Table from 'react-bootstrap/Table';
 import Button from 'react-bootstrap/Button';
 
 import PatentAdditionModal from './PatentAdditionModal';
+import PatentEditModal from './PatentEditModal';
+
 import {useParams} from 'react-router-dom';
 
 function PatentHomeComponent(props){
 
     const [modalShow, setModalShow] = useState(false);
+    const [editModalShow, setEditModalShow] = useState(false);
+    const [editItem,setEditItem] = useState('');
     let [patentList,setPatentList]=useState(null);
     const params = useParams();
     
@@ -27,6 +31,7 @@ function PatentHomeComponent(props){
            setPatentList(data);     
         }) 
         setModalShow(false);
+        setEditModalShow(false);
     }
 
     useEffect(() => {
@@ -47,6 +52,8 @@ function PatentHomeComponent(props){
                             <th>Inventors</th>
                             <th>Date</th>
                             <th>Status</th>
+                            <th>Edit</th>
+                            <th>Remove</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -59,12 +66,13 @@ function PatentHomeComponent(props){
                                     <td>{item.inventors}</td>
                                     <td>{new Date(item.date).toDateString()}</td>
                                     <td>{item.status}</td>
+                                    <td><Button variant="primary" onClick={()=> { setEditItem(item);setEditModalShow(true);}}>Edit</Button>{' '}</td>
                                     <td><Button variant="danger" onClick={()=>removePatent(`${item._id}`)}>Remove</Button>{' '}</td>
                                 </tr>
                             )):<tr></tr>
                         }
                     <tr>   
-                        <td colSpan='6'></td>
+                        <td colSpan='7'></td>
                         <td><Button variant="primary" onClick={() => setModalShow(true)}>Add Patent</Button></td>
                     </tr>
                     </tbody>
@@ -76,7 +84,12 @@ function PatentHomeComponent(props){
         show={modalShow}
         onHide={()=>fetchPatentList()}
       />
-                
+
+<PatentEditModal
+        show={editModalShow}
+        onHide={()=>fetchPatentList()}
+        editItem = {editItem}
+      />                 
             </div>:''
         )
 }

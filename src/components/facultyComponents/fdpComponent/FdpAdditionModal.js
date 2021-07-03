@@ -9,10 +9,8 @@ function FdpAdditionModal(props) {
     const [org,setOrg]=useState('');;
     const [from,setFrom]=useState('');
     const [to,setTo]=useState('');
-    const [designation,setDesignation]=useState('');
     const params = useParams();
     const [pdf,setPDF]=useState("");
-    
 
     const PostFdp =async ()=>{
       let formData = new FormData();
@@ -34,7 +32,6 @@ function FdpAdditionModal(props) {
         window.alert("FDP added successfully");
         setFdpName('');
         setOrg('');
-        setDesignation('');
         setFrom('');
         setTo('');
       }    
@@ -60,13 +57,13 @@ function FdpAdditionModal(props) {
               <label className='col-sm-4'>Organization:</label>
               <input className='col-sm-6' type='textbox' value={org} onChange={ e => setOrg(e.target.value)}/>
              <div>
-              <label className='col-sm-4' >From:</label>
-              <input className='col-sm-6' type='date' value={from} onChange={ e => setFrom(e.target.value)}/>
-              <label className='col-sm-4' >To:</label>
-              <input className='col-sm-6' type='date' value={to} onChange={ e => setTo(e.target.value)}/>
+              <label className='col-sm-2' >From:</label>
+              <input className='col-sm-3' type='date' value={from} onChange={ e => setFrom(e.target.value)}/>
+              <label className='col-sm-2' >To:</label>
+              <input className='col-sm-3' type='date' value={to} onChange={ e => setTo(e.target.value)}/>              
               <label className='col-sm-4' >Upload Certificate:</label>
-              <input className='col-sm-6' type='file' name='pdf' onChange={ e => setPDF(e.target.files[0])}/>
-              </div>              
+              <input className='col-sm-6' type='file' name='pdf' onChange={ e => setPDF(e.target.files[0])}/>  
+            </div>              
              </form>
         </Modal.Body>
         <Modal.Footer>

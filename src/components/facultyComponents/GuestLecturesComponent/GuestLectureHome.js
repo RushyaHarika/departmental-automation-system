@@ -4,11 +4,14 @@ import Table from 'react-bootstrap/Table';
 import Button from 'react-bootstrap/Button';
 
 import GuestLectureAdditionModal from './GuestLectureAdditionModal';
+import GuestLectureEditModal from './GuestLectureEditModal';
 import {useParams} from 'react-router-dom';
 
 function GuestLectureHomeComponent(props){
 
     const [modalShow, setModalShow] = useState(false);
+    const [editModalShow, setEditModalShow] = useState(false);
+    const [editItem,setEditItem] = useState('');
     let [lectureList,setLectureList]=useState(null);
     const params = useParams();
     const [fid,setFid] = useState('');
@@ -29,6 +32,7 @@ function GuestLectureHomeComponent(props){
            setLectureList(data);     
         }) 
         setModalShow(false);
+        setEditModalShow(false);
     }
 
     useEffect(() => {
@@ -48,6 +52,8 @@ function GuestLectureHomeComponent(props){
                             <th>Date</th>
                             <th>Number of participants</th>
                             <th>College Details</th>
+                            <th>Edit</th>
+                            <th>Remove</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -59,12 +65,13 @@ function GuestLectureHomeComponent(props){
                                     <td>{new Date(item.date).toDateString()}</td>
                                     <td>{item.participants}</td>
                                     <td>{item.college}</td>
+                                    <td><Button variant="primary" onClick={()=> { setEditItem(item);setEditModalShow(true);}}>Edit</Button>{' '}</td>
                                     <td><Button variant="danger" onClick={()=>removeLecture(`${item._id}`)}>Remove</Button>{' '}</td>
                                 </tr>
                             )):<tr></tr>
                         }
                     <tr>   
-                        <td colSpan='5'></td>
+                        <td colSpan='6'></td>
                         <td><Button variant="primary" onClick={() => setModalShow(true)}>Add Guest Lecture</Button></td>
                     </tr>
                     </tbody>
@@ -76,7 +83,12 @@ function GuestLectureHomeComponent(props){
         show={modalShow}
         onHide={()=>fetchLectureList()}
       />
-                
+
+    <GuestLectureEditModal
+        show={editModalShow}
+        onHide={()=>fetchLectureList()}
+        editItem = {editItem}
+      />                
             </div>:''
         )
 }

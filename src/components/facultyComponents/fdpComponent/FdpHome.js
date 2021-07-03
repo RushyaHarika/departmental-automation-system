@@ -4,13 +4,18 @@ import Table from 'react-bootstrap/Table';
 import Button from 'react-bootstrap/Button';
 
 import FdpAdditionModal from './FdpAdditionModal';
+import FdpEditModal from './FdpEditModal';
 import {useParams} from 'react-router-dom';
 
 function FdpHomeComponent(props){
 
     const [modalShow, setModalShow] = useState(false);
+    const [editModalShow, setEditModalShow] = useState(false);
+    const [editItem,setEditItem] = useState('');
     let [fdpList,setFdpList]=useState(null);
     const params = useParams();
+    const [fid,setFid] = useState('');
+    
     
     const removeFdp=(fid)=>{
         fetch("/api/fdp/"+fid,{
@@ -27,6 +32,7 @@ function FdpHomeComponent(props){
            setFdpList(data);     
         }) 
         setModalShow(false);
+        setEditModalShow(false);
     }
 
     useEffect(() => {
@@ -47,6 +53,8 @@ function FdpHomeComponent(props){
                             <th>From</th>
                             <th>To</th>
                             <th>Certification</th>
+                            <th>Edit</th>
+                            <th>Remove</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -59,6 +67,7 @@ function FdpHomeComponent(props){
                                     <td>{new Date(item.from).toDateString()}</td>
                                     <td>{new Date(item.to).toDateString()}</td>
                                     <td>{item.file_name}</td>
+                                    <td><Button variant="primary" onClick={()=> { setEditItem(item);setEditModalShow(true);}}>Edit</Button>{' '}</td>
                                     <td><Button variant="danger" onClick={()=>removeFdp(`${item._id}`)}>Remove</Button>{' '}</td>
                                 </tr>
                             )):<tr></tr>
@@ -76,7 +85,12 @@ function FdpHomeComponent(props){
         show={modalShow}
         onHide={()=>fetchFdpList()}
       />
-                
+
+    <FdpEditModal
+        show={editModalShow}
+        onHide={()=>fetchFdpList()}
+        editItem = {editItem}
+      />                 
             </div>:''
         )
 }

@@ -5,10 +5,13 @@ import Button from 'react-bootstrap/Button';
 import {useParams} from "react-router-dom";
 
 import SyllabusAdditionModal from './SyllabusAdditionModal';
+import SyllabusEditModal from './SyllabusEditModal';
 
 function SyllabusStatusHome(props){
    
     const [modalShow, setModalShow] = useState(false);
+    const [editModalShow, setEditModalShow] = useState(false);
+    const [editItem,setEditItem] = useState('');
     let [SyllabusList,setSyllabusList]=useState(null);
     const params=useParams();
     const fid=params.id; 
@@ -29,6 +32,7 @@ function SyllabusStatusHome(props){
            console.log(data)    
         }) 
         setModalShow(false);
+        setEditModalShow(false);
     }
     useEffect(() => {
          fetchSyllabusList(); 
@@ -52,6 +56,7 @@ function SyllabusStatusHome(props){
                             <th>Date</th>
                             <th>Section</th>
                             <th>Year</th>
+                            <th>Edit syllabus status</th>
                             <th>Remove syllabus status</th>
                         </tr>
                     </thead>
@@ -69,6 +74,7 @@ function SyllabusStatusHome(props){
                                     <td>{new Date(item.date).toDateString()}</td>
                                     <td>{item.section}</td>
                                     <td>{item.year}</td>
+                                    <td><Button variant="primary" onClick={()=> { setEditItem(item);setEditModalShow(true);}}>Edit</Button>{' '}</td>
                                     <td><Button variant="danger" onClick={()=>removeSyllabus(`${item._id}`)}>Remove</Button>{' '}</td>
                                 
                                 </tr>
@@ -82,11 +88,16 @@ function SyllabusStatusHome(props){
 
                 
 
-      <SyllabusAdditionModal
+    <SyllabusAdditionModal
         show={modalShow}
         onHide={()=>fetchSyllabusList()}
       />
-                
+
+    <SyllabusEditModal
+        show={editModalShow}
+        onHide={()=>fetchSyllabusList()}
+        editItem = {editItem}
+      />                 
             </div>:''
         )
 }

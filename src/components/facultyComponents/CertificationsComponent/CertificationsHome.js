@@ -4,11 +4,15 @@ import Table from 'react-bootstrap/Table';
 import Button from 'react-bootstrap/Button';
 
 import CertificationsAdditionModal from './CertificationsAdditionModal';
+import CertificationsEditModal from './CertificationsEditModal';
+
 import {useParams} from 'react-router-dom';
 
 function CertificationsHomeComponent(props){
 
     const [modalShow, setModalShow] = useState(false);
+    const [editModalShow, setEditModalShow] = useState(false);
+    const [editItem,setEditItem] = useState('');
     let [certificationList,setCertificationList]=useState(null);
     const params = useParams();
     const [fid,setFid] = useState('');
@@ -29,6 +33,7 @@ function CertificationsHomeComponent(props){
            setCertificationList(data);     
         }) 
         setModalShow(false);
+        setEditModalShow(false);
     }
 
     useEffect(() => {
@@ -52,6 +57,8 @@ function CertificationsHomeComponent(props){
                             <th>Year</th>
                             <th>Cycle</th>
                             <th>Document</th>
+                            <th>Edit</th>
+                            <th>Remove</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -67,6 +74,7 @@ function CertificationsHomeComponent(props){
                                     <td>{item.year}</td>
                                     <td>{item.cycle}</td>
                                     <td>{item.file_name}</td>
+                                    <td><Button variant="primary" onClick={()=> { setEditItem(item);setEditModalShow(true);}}>Edit</Button>{' '}</td>
                                     <td><Button variant="danger" onClick={()=>removeCertification(`${item._id}`)}>Remove</Button>{' '}</td>
                                 </tr>
                             )):<tr></tr>
@@ -78,7 +86,12 @@ function CertificationsHomeComponent(props){
         show={modalShow}
         onHide={()=>fetchCertificationList()}
       />
-                
+
+    <CertificationsEditModal
+        show={editModalShow}
+        onHide={()=>fetchCertificationList()}
+        editItem = {editItem}
+      />                 
             </div>:''
         )
 }
