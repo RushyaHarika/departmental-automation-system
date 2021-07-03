@@ -14,7 +14,9 @@ function LoginComponent() {
     const [facultyerror,setFacultyError]=useState('');
     const [password,setPassword]=useState('');
     const [isAuthenticated,setIsAuthenticated]=useState(false);
+    const [coordinatorChecked,setCoordinatorChecked]=useState(false);
     let [fid,setFid]=useState('');
+    let [hodFid,setHodFid]=useState('');
 
     const handle=(e)=>{
         e.preventDefault();
@@ -76,8 +78,8 @@ function LoginComponent() {
             fetch("/api/fid/hod_cse@aec.edu.in").then((res)=>
             res.json())
             .then((data)=>{
-            setFid(data.fid);
-            console.log("List",data,fid);
+            setHodFid(data.fid);
+            console.log("List",data,hodFid);
             })
             const res=await fetch("/api/auth",{
                 method:"POST",
@@ -89,6 +91,7 @@ function LoginComponent() {
                 })
               })
               const data=await res.json();
+              
               if(res.status===400){
                 //window.alert("Invalid email or password");
                 setIsAuthenticated(false);
@@ -153,9 +156,15 @@ function LoginComponent() {
                                     onChange={ e => setPassword(e.target.value)}
                                 />
                             </div>
+                            <div className="form-group pl-3 pr-3 pt-1">
+                                <input
+                                    type="checkbox"
+                                    onChange = {e => setCoordinatorChecked(!coordinatorChecked)}
+                                /> Logging in as coordinator? check this box
+                            </div>
                             <div className="form-group pt-3 pb-3 pl-3 pr-3">
-
-                                <Link to={handleAuthentication(0), isAuthenticated?"/faculty/"+fid:"/"}><button 
+                            
+                                <Link to={handleAuthentication(0), isAuthenticated?(coordinatorChecked?"/":"/faculty/"+fid):"/"}><button 
                                     className="col-sm-12" 
                                     style={{backgroundColor:"#16a085",border:"6px",borderRadius:"2px",padding:"6px",color:"white",fontSize:"18px"}}
                                     type="submit"
@@ -166,7 +175,7 @@ function LoginComponent() {
                                 </Link>     
                             </div> 
                             <div className="text-center pt-2 ">
-                                <p><a href="/forgot" style={{color:"black"}}>Forgot Password?</a></p>
+                                <p><a href={"/forgot/"+fid} style={{color:"black"}}>Forgot Password?</a></p>
                             </div> 
                             {
                                 facultyerror?<div className="alert alert-danger text-center">
@@ -203,7 +212,7 @@ function LoginComponent() {
                                     </Link> 
                                 </div> 
                                 <div className="text-center pt-2 ">
-                                    <p><a href="/forgot" style={{color:"black"}}>Forgot Password?</a></p>
+                                    <p><a href={"/forgot/"+hodFid} style={{color:"black"}}>Forgot Password?</a></p>
                                 </div>  
                                 {
                                 hoderror?<div className="alert alert-danger text-center">
