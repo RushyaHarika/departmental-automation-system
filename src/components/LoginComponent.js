@@ -6,7 +6,7 @@ import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import { faUser,faUsers} from "@fortawesome/free-solid-svg-icons";
 
 
-function LoginComponent() {
+function LoginComponent(props) {
     const [hod, setHod] = useState(true);
     const [faculty,setFaculty]=useState(false);
     const [email,setEmail]=useState('');
@@ -69,9 +69,11 @@ function LoginComponent() {
           if(res.status===400){
             //window.alert("Invalid email or password");
             setIsAuthenticated(false);
+            //props.setAuthenticated(false);
           }else{
             //window.alert("Login Successful");
             setIsAuthenticated(true); 
+            //props.setAuthenticated(true);
           }
 
         }else{
@@ -95,9 +97,11 @@ function LoginComponent() {
               if(res.status===400){
                 //window.alert("Invalid email or password");
                 setIsAuthenticated(false);
+               //props.setAuthenticated(false);
               }else{
                // window.alert("Login Successful");
                 setIsAuthenticated(true); 
+                //props.setAuthenticated(true);
               }
         }
 
@@ -170,6 +174,7 @@ function LoginComponent() {
                                     type="submit"
                                     onClick={()=>{
                                         validate(0);
+                                        props.setAuthenticated(isAuthenticated?true:props.false);
                                         }}
                                     >LogIn</button>
                                 </Link>     
@@ -207,6 +212,7 @@ function LoginComponent() {
                                         type="submit"
                                         onClick={()=>{
                                         validate(1);
+                                        props.setAuthenticated(isAuthenticated?true:false);
                                        }}
                                        >LogIn</button>
                                     </Link> 
